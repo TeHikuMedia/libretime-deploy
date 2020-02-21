@@ -1,0 +1,7 @@
+- name: Copy the apache2 config file
+  become: yes
+  template:
+    src: airtime-vhost.conf.j2
+    dest: /etc/apache2/sites-available/airtime.conf
+  notify:
+    - restart apache2

@@ -1,0 +1,50 @@
+---
+
+- name: Create Elastic Application Load Balancer
+  local_action:
+    module: elb_application_lb
+    name: "ELB-LB-{{ project_name }}-{{env_type}}-web"
+    state: present
+    region: ap-southeast-2
+    idle_timeout: 75 # Nginx Defaultf or Keep-Alive https://serverfault.com/questions/782022/keepalive-setting-for-gunicorn-behind-elb-without-nginx
+    listeners:       
+      - Protocol: HTTPS
+        Port: 443
+        SslPolicy: ELBSecurityPolicy-2016-08        
+        Certificates:
+          - CertificateArn: "{{elb_ssl_cert_arn}}"
+        DefaultActions:
+          - Type: forward
+            TargetGroupName: "{{ project_name }}-{{env_type}}-web"
+      - Protocol: HTTP
+        Port: 80
+        DefaultActions:
+          - Type: forward
+            TargetGroupName: "{{ project_name }}-{{env_type}}-web"
+      - Protocol: HTTP
+        Port: 8000
+        DefaultActions:
+          - Type: forward
+            TargetGroupName: "{{ project_name }}-{{env_type}}-ice-8000"
+      - Protocol: HTTP
+        Port: 8001
+        DefaultActions:
+          - Type: forward
+            TargetGroupName: "{{ project_name }}-{{env_type}}-ice-8001"
+      - Protocol: HTTP
+        Port: 8002
+        DefaultActions:
+          - Type: forward
+            TargetGroupName: "{{ project_name }}-{{env_type}}-ice-8002"
+    security_groups:
+      - "{{ project_name }}-{{env_type}}-loadbalancer"
+    subnets: 
+      - subnet-5585da13 # ap-southeast-2c
+      - subnet-895e6afd # ap-southeast-2a
+      - subnet-98efe4fa # ap-southeast-2b
+  register: ec2_elb_lb
+  tags:
+    - ec2
+    - elb
+    - lb
+

@@ -1,0 +1,9 @@
+---
+
+# ansible_python_interpreter: python3
+
+# SSH Credentials
+private_key: ~/.ssh/libretime.pem
+
+# Repository Details
+# branch: "master"

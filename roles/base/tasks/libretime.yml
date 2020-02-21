@@ -1,0 +1,105 @@
+---
+
+- name: Install git so we can retrieve app source
+  apt:
+    name: git
+    state: latest
+  become: true
+
+- name: Setup the git repo
+  become: false
+  git:  repo="{{ git_repo }}" 
+        dest="{{ project_path }}" 
+        version="{{ git_branch }}"
+        accept_hostkey=yes
+        force=yes
+  when: setup_git_repo
+  tags: git
+
+# - name: Make python3.6 default
+#   command: "update-alternatives --install /usr/bin/python python /usr/bin/python3.6 10"
+#   become: true
+
+- name: Install required packages
+  apt:
+    name:
+      - python-pip
+      - icecast2
+    state: latest
+  become: true
+
+- name: Run Libretime install script
+  command: "chdir=/home/ubuntu/{{project_name}} sudo /home/ubuntu/{{project_name}}/install -qfiap"
+  notify:
+    - restart apache2
+
+- name: Copy the libretime config file
+  become: yes
+  template:
+    src: airtime.conf.j2
+    dest: /etc/airtime/airtime.conf
+  notify:
+    - restart airtime
+
+- name: Start Lirbetime Services
+  become: yes
+  service:
+    name: "{{item}}"
+    state: started
+  with_items:
+      - airtime-playout
+      - airtime-liquidsoap
+      - airtime_analyzer
+      - airtime-celery
+      - libretime_import
+
+
+# We should install a default config
+
+
+# Then we should ensure these are running
+# sudo service airtime-playout start
+# sudo service airtime-liquidsoap start
+# sudo service airtime_analyzer start
+# sudo service airtime-celery start
+
+
+
+
+
+# - name: Install git repo
+#   git:
+
+
+# - name: make repo directory
+#   become: true
+#   file:
+#     path: "{{ virtualenv_path }}"
+#     recurse: no # having this as yes fucks up while in deployment and live. plus the set file perms task does this anyway
+#     owner: "{{ ansible_ssh_user }}"
+#     group: "{{ gunicorn_group }}"
+#     state: directory
+#   tags:
+#    - git  
+
+
+# # Set specific permissions for git stuff
+# - name: set repo perms
+#   become: true
+#   file:
+#     path: "{{item}}"
+#     owner: "{{ ansible_ssh_user }}"
+#     group: "{{ gunicorn_group }}"
+#     recurse: yes
+#     state: directory
+#   tags:
+#     - git 
+#   with_items:
+#     - "{{project_path}}"
+
+# - name: Clean git repo directory
+#   shell: git clean -fX
+#   args:
+#     chdir: "{{ project_path }}"
+#   when: clean_git_repo
+

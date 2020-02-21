@@ -1,0 +1,55 @@
+---
+
+
+- ec2_instance_facts:
+    region: "{{aws_region}}"
+    filters:
+      "tag:project_env_server_type":  "{{ project_name }}_{{env_type}}_web"
+  register:
+    ec2_instances
+
+
+# In this scenario we send all traffic to our ec2 on port 80
+# and we let the ELB handle the https
+# docs: http://docs.ansible.com/ansible/latest/elb_target_group_module.html
+- name: Create Load Balancing Target Group for web
+  local_action:
+    module: elb_target_group
+    name: "{{ project_name }}-{{env_type}}-web"
+    state: present
+    region: ap-southeast-2    
+    protocol: http
+    port: 80
+    targets:
+      - Id: "{{ec2_instances.instances[0].instance_id}}"
+        Port: 80
+    vpc_id: "{{ vpc_id }}" # THIS IS HARD CODED!
+  register: ec2_elb_tg
+  tags:
+    - ec2
+    - elb
+    - tg
+
+- name: Create Load Balancing Target Group for icecast
+  local_action:
+    module: elb_target_group
+    name: "{{ project_name }}-{{env_type}}-ice-{{item}}"
+    state: present
+    region: ap-southeast-2    
+    protocol: http
+    port: "{{item}}"
+    health_check_port: "80"
+    health_check_protocol: http
+    health_check_path: "/"
+    targets:
+      - Id: "{{ec2_instances.instances[0].instance_id}}"
+        Port: "{{item}}"
+    vpc_id: "{{ vpc_id }}" # THIS IS HARD CODED!
+  tags:
+    - ec2
+    - elb
+    - tg
+  with_items:
+    - 8000
+    - 8001
+    - 8002

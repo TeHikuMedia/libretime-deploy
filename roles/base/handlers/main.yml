@@ -1,0 +1,16 @@
+---
+
+- name: restart apache2
+  service:
+    name: apache2
+    state: restarted
+
+- name: restart airtime
+  service:
+    name: "{{item}}"
+    state: restarted
+  with_items:
+      - airtime-playout
+      - airtime-liquidsoap
+      - airtime_analyzer
+      - airtime-celery
