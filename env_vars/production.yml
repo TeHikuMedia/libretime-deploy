@@ -3,7 +3,7 @@
 env_type: production
 ansible_python_interpreter: python3
 
-git_branch: dev
+git_branch: libretime_watch_rebased #watch_python3 
 setup_git_repo: yes
 
 # AWS Settings

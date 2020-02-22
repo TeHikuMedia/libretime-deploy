@@ -51,7 +51,8 @@
       - airtime-liquidsoap
       - airtime_analyzer
       - airtime-celery
-      - libretime_import
+      - libretime_watch
+      #- libretime_import
 
 
 # We should install a default config

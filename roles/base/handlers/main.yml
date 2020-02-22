@@ -14,3 +14,4 @@
       - airtime-liquidsoap
       - airtime_analyzer
       - airtime-celery
+      - libretime_watch
