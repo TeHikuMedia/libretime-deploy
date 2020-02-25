@@ -3,3 +3,7 @@
 script_repo: https://github.com/TeHikuMedia/libretime-scripts
 script_branch: master
 script_dir: /home/ubuntu/media_import
+
+sync_dir: /home/ubuntu/sync
+sync_config: "/etc/resilio-sync/config.json"
+db_dir: "{{sync_dir}}/TeHikuRadioDB"

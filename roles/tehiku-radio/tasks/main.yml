@@ -1,5 +1,7 @@
 ---
 
+- include: resilio_sync.yml
+
 - name: Setup the git repo
   git:  repo="{{ script_repo }}" 
         dest="{{ script_dir }}" 
@@ -35,7 +37,7 @@
     job: "python /usr/local/lib/python2.7/dist-packages/libretime_watch-0.1-py2.7.egg/libretime_watch/start_watching.py"
 
 - name: Add Waatea cronjob
-  become: yes
+  become: false
   cron:
     name: "waatea_import"
     job: "/usr/bin/python2.7 /home/ubuntu/media_import/media_importing/waatea_import.py > /home/ubuntu/cron.log"
@@ -43,7 +45,7 @@
     hour: "06-19"
 
 - name: Add ngatake cronjob # todo put this in the script repo not deploy!
-  become: yes
+  become: false
   cron:
     name: "nga_take_import"
     job: "/usr/bin/python2.7 /home/ubuntu/media_import/media_importing/ngatake_import.py > /home/ubuntu/cron.log"

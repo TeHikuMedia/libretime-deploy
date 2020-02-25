@@ -1,0 +1,80 @@
+---
+
+- name: Get server IP
+  become: no
+  local_action:
+    module: ec2_instance_facts
+    region: "{{ aws_region }}"
+    filters:
+      "tag:project_env_server_type": "{{project_name}}_{{env_type}}_{{server_type}}"
+  register:
+    ec2_facts
+
+- set_fact:
+    public_IP: "{{ec2_facts.instances[0]['public_ip_address']}}"
+
+- debug:
+    var: public_IP
+
+- name: Add resilio repo
+  become: yes
+  file:
+    path: /etc/apt/sources.list.d/resilio-sync.list
+    state: touch
+
+- name: Add resilio repo
+  become: yes
+  lineinfile:
+    path: /etc/apt/sources.list.d/resilio-sync.list
+    line: "deb https://linux-packages.resilio.com/resilio-sync/deb resilio-sync non-free"
+
+- name: Download public key
+  become: yes
+  get_url:
+    url: https://linux-packages.resilio.com/resilio-sync/key.asc
+    dest: ./key.asc
+
+- name: Add public key
+  become: yes
+  command: apt-key add ./key.asc
+
+- name: Update apt packages
+  become: true
+  apt:
+    update_cache: yes
+
+- name: Install resilio sync 
+  apt:
+    name: resilio-sync
+    state: latest
+
+- name: Set users and groups for resilio
+  command: usermod -aG ubuntu rslsync
+  command: usermod -aG rslsync ubuntu
+  command: usermod -aG www-data rslsync
+  command: usermod -aG rslsync www-data
+
+- name: Make sure sync dir exists
+  file:
+    dest: "{{sync_dir}}"
+    state: directory
+    mode: 0777
+
+- name: Make sure DB directory exists
+  file:
+    dest: "{{db_dir}}"
+    state: directory
+    mode: 0777
+
+- name: Install config file
+  template:
+    src: syncconf.json.j2
+    dest: "{{sync_config}}"
+  notify:
+    - restart resilio-sync
+
+- name: Enable sync services
+  systemd:
+    name: resilio-sync
+    state: started
+    enabled: yes

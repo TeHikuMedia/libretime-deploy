@@ -1,0 +1,63 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides: resilio-sync
+# Required-Start: $local_fs $remote_fs
+# Required-Stop: $local_fs $remote_fs
+# Should-Start: $network
+# Should-Stop: $network
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: daemonized version of resilio-sync.
+# Description: Starts the resilio-sync daemon.
+### END INIT INFO
+
+
+DAEMON=/usr/bin/rslsync
+SYNC_USER=rslsync
+CONFIG={{sync_config}}
+
+
+. /lib/lsb/init-functions
+
+
+wait_process()
+{
+    while kill -0 "$1" 2> /dev/null; do
+        sleep 0.5
+    done
+}
+
+
+start()
+{
+    echo "Starting Resilio Sync"
+    mkdir -p /var/run/resilio-sync
+    chown -R $SYNC_USER:$SYNC_USER /var/run/resilio-sync
+    start-stop-daemon --start --quiet -b -o -c $SYNC_USER -u $SYNC_USER --exec $DAEMON --umask 0002 -- --config $CONFIG
+}
+
+
+stop()
+{
+    start-stop-daemon --stop -o -c $SYNC_USER -K -u $SYNC_USER -x $DAEMON
+    wait_process $(pidof $DAEMON)
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  restart|reload|force-reload)
+      stop
+      start
+    ;;
+  *)
+    echo "Usage: /etc/init.d/resilio-sync {start|stop|restart}"
+    exit 1
+    ;;
+esac
+
+exit 0
