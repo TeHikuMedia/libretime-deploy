@@ -74,3 +74,17 @@ To encrypt a file,
     ansible-vault encrypt env_vars/vault.yml
 
 For security reasons we're not storing that file in the repo. Instead we include a template which must be filled out by the user.
+
+```yml
+---
+
+libretime_api_key: YOURKEYKEREY
+
+RESILIO_LOGIN: LOGINNAME
+RESILIO_PASS: PASSWORD
+RESILIO_FOLDER_KEY: YOURKEY
+RESILIO_FOLDER_KEY_SUNSHINE: ANOTHERKY
+
+elb_ssl_cert_arn: this_has_to_be_hard_coded_for_some_reason
+```
+
