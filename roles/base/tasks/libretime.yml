@@ -16,30 +16,71 @@
   when: setup_git_repo
   tags: git
 
-# - name: Make python3.6 default
-#   command: "update-alternatives --install /usr/bin/python python /usr/bin/python3.6 10"
+# - name: Install python 3.7, and other required packages
+#   apt:
+#     name:
+#       - python-pip
+#       - python3-pip
+#       - python3.7
+#       - python3.7-venv
+#     state: present
+
+# - name: wierd apt fix
+#   apt:
+#     name:
+#       - python3-apt
+#       - python-apt
+#     state: absent
+
+# - name: wierd apt fix
+#   apt:
+#     name:
+#       - python3-apt
+#       - python-apt
+#     state: present
+
+# - name: Update python3 default
+#   command: update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 1
+#   command: update-alternatives --install /usr/bin/python python /usr/bin/python3.7 1
+
+# - name: Set python3.7 default
+#   command: update-alternatives --set python /usr/bin/python3.7
+#   command: update-alternatives --set python3 /usr/bin/python3.7
+
+# - name: Install required packages
+#   apt:
+#     name:
+#       - icecast2
+#     state: latest
 #   become: true
 
-- name: Install required packages
-  apt:
-    name:
-      - python-pip
-      - icecast2
-    state: latest
-  become: true
+# - name: Make python3 the system default
+#   command: update-alternatives --install /usr/bin/python python /usr/bin/python3 1
 
 - name: Run Libretime install script
   command: "chdir=/home/ubuntu/{{project_name}} sudo /home/ubuntu/{{project_name}}/install -qfiap"
   notify:
     - restart apache2
 
-- name: Copy the libretime config file
-  become: yes
-  template:
-    src: airtime.conf.j2
-    dest: /etc/airtime/airtime.conf
-  notify:
-    - restart airtime
+# - name: Copy the libretime config file
+#   become: yes
+#   template:
+#     src: airtime.conf.j2
+#     dest: /etc/airtime/airtime.conf
+#   notify:
+#     - restart airtime
+
+# - name: Install opam so we can get fdk library for airtime-liquidsoap
+#   apt:
+#     name:
+#       - opam
+#     state: present
+
+# - name: INstall the lib opam install fdkaac
+#   become: no
+#   shell: opam init -y fdkaac
+#   shell: opam switch create 4.10.0
+#   shell: opam install -y fdkaac
 
 - name: Start Lirbetime Services
   become: yes

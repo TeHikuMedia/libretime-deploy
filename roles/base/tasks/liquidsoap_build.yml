@@ -1,0 +1,128 @@
+---
+
+## Required for ubbuntu < 19
+# - name: Add ocaml repo
+#   command: add-apt-repository ppa:avsm/ppa -y
+
+- name: Download liquidsoap
+  become: no
+  get_url:
+    url: "https://github.com/savonet/liquidsoap/releases/download/{{liq_version}}/liquidsoap-{{liq_version}}-full.tar.bz2"
+    dest: /home/ubuntu/liquidsoap.tar.bz2
+
+- name: Uncompress download
+  become: no
+  unarchive:
+    src: /home/ubuntu/liquidsoap.tar.bz2
+    dest: /home/ubuntu/
+    remote_src: yes
+
+- name: Install packages required to build liquidsoap
+  apt:
+    state: present
+    name:
+      - ffmpeg
+      - opam
+      - libmad0-dev
+      - libmp3lame-dev
+      - libfdk-aac-dev
+      - libtag1-dev
+      - libshine-dev
+      - libogg-dev
+      - libopus-dev
+      - libvorbis-dev
+      - libflac-dev
+      - libladspa-ocaml
+      - libduppy-ocaml-dev
+      - libdtools-ocaml-dev
+      - libfaad-dev
+      - libsamplerate0-dev
+      - libavutil-dev
+      - libswscale-dev
+      - libavformat-dev
+      - libxmlm-ocaml-dev
+      - liblo-dev
+      - mccs
+      - libsedlex-ocaml-dev # only in 19.04
+
+- name: Install ocaml shit
+  become: no
+  become_user: ubuntu
+  shell: "{{item}}"
+  with_items:
+    - opam init -a --solver=mccs
+    - opam switch create 4.09.0 | true
+    - opam install -y ocaml  --solver=mccs
+    - opam install -y sedlex --solver=mccs
+    - opam install -y xmlm --solver=mccs
+    - opam install -y pcre --solver=mccs
+    - opam install -y menhirLib menhir --solver=mccs
+    - opam install -y menhir --solver=mccs
+    - opam install -y camomile --solver=mccs
+
+
+- name: Copy packages file for build config
+  template:
+    src: PACKAGES.j2
+    dest: "/home/ubuntu/liquidsoap-{{liq_version}}-full/PACKAGES"
+
+- name: configure
+  become: no
+  become_user: ubuntu
+  shell: "{{item}}"
+  args:
+    chdir: "/home/ubuntu/liquidsoap-{{liq_version}}-full/"
+  with_items:
+    - ./configure
+  ignore_errors: yes
+  tags:
+    - build
+
+- name: make clean
+  become: no
+  become_user: ubuntu
+  make:
+    chdir: "/home/ubuntu/liquidsoap-{{liq_version}}-full/"
+    target: clean
+  tags:
+    - build
+
+- name: make
+  become: no
+  become_user: ubuntu
+  make:
+    chdir: "/home/ubuntu/liquidsoap-{{liq_version}}-full/"
+  tags:
+    - build
+  ignore_errors: yes
+
+- name: Run 'install' target as root
+  make:
+    chdir: "/home/ubuntu/liquidsoap-{{liq_version}}-full/"
+    target: install
+  ignore_errors: yes
+  tags:
+    - build
+
+- name: "Check liquidsoap installed for version {{liq_version}}"
+  shell: echo `liquidsoap --version | sed -n '1p' - | sed 's/[A-z]\+//'`
+  register: liqout
+  tags:
+    - build
+- set_fact:
+    version: "{{liqout['stdout_lines'][0]}}"
+  tags:
+    - build
+
+- name: Check version updated
+  fail:
+    msg: Error installing liquipsoap. Check output above.
+  when: version != liq_version
+  tags:
+    - build
+
+- debug:
+    msg: "liquipsoap {{liq_version}} exists"
+  when: version == liq_version
+  tags:
+    - build

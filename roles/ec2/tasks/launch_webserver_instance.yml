@@ -47,8 +47,16 @@
         from_port: 3000
         to_port: 3001
         cidr_ip: 0.0.0.0/0
+      - proto: udp
+        from_port: 3838
+        to_port: 3838
+        cidr_ip: 0.0.0.0/0
     rules_egress:
       - proto: tcp
+        from_port: 0
+        to_port: 65535
+        cidr_ip: 0.0.0.0/0
+      - proto: udp
         from_port: 0
         to_port: 65535
         cidr_ip: 0.0.0.0/0

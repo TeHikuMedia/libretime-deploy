@@ -1,0 +1,68 @@
+---
+
+- name: Stop airtime services
+  service:
+    name: "{{item}}"
+    state: stopped
+  with_items:
+      - airtime-playout
+      - airtime-liquidsoap
+      - airtime_analyzer
+      - airtime-celery
+      - libretime_watch
+
+# https://github.com/georchestra/ansible/issues/55
+- name: Install packages we need to do this - ansible and postgress thingy
+  apt:
+    name:
+      - acl
+      - python-psycopg2
+    state: present
+
+- name: delete libretime database
+  become: true
+  become_user: postgres
+  postgresql_db:
+    name: "{{db_name}}"
+    state: absent
+  when: delete_database
+
+# - name: Create libretime database
+#   become: true
+#   become_user: postgres
+#   postgresql_db:
+#     name: "{{db_name}}"
+#     state: present
+
+# - name: Create database user
+#   postgresql_user:
+#     db: "{{db_name}}"
+#     name: "{{db_user_name}}"
+#     password: "{{db_user_password}}"
+#   become: true
+#   become_user: postgres
+
+# - name: Copy db file
+#   template:
+#     src: initial.db.j2
+#     dest: /tmp/initial.db
+
+# # - name: Install initial database
+# #   become: true
+# #   become_user: postgres
+# #   when: delete_database
+# #   postgresql_db:
+# #     name: "{{db_name}}"
+# #     state: restore
+# #     target: /tmp/initial.db
+
+# - name: Start airtime services
+#   service:
+#     name: "{{item}}"
+#     state: started
+#   with_items:
+#       - airtime-playout
+#       - airtime-liquidsoap
+#       - airtime_analyzer
+#       - airtime-celery
+#       - libretime_watch

@@ -2,6 +2,8 @@
 
 project_path: "~/{{project_name}}"
 
+liq_version: 1.4.1
+
 # ffmpeg_build_dir:   "/home/{{ansible_ssh_user}}/ffmpeg_build"
 # ffmpeg_sources_dir: "/home/{{ansible_ssh_user}}/ffmpeg_sources"
 

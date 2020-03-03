@@ -4,3 +4,14 @@
   service:
     name: resilio-sync
     state: restarted
+
+- name: restart airtime
+  service:
+    name: "{{item}}"
+    state: restarted
+  with_items:
+      - airtime-playout
+      - airtime-liquidsoap
+      - airtime_analyzer
+      - airtime-celery
+      - libretime_watch

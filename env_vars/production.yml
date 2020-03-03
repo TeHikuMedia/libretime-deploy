@@ -3,15 +3,14 @@
 env_type: production
 ansible_python_interpreter: python3
 
-git_branch: libretime_watch_rebased #watch_python3 
+git_branch: python3_libretime_watch_rebased_ubuntu_eoan
 setup_git_repo: yes
 
 # AWS Settings
 webserver_instance_type: m5.large 
-webserver_ami: ami-03d6d932787644938 # sydney, Ubuntu 18.04 LTS - Bionic
+webserver_ami: ami-02c24ae4efd45347e # sydney, Ubuntu 19.10
 
 vpc_id: vpc-9a9d97f8
-elb_ssl_cert_arn: arn:aws:acm:ap-southeast-2:473856431958:certificate/c0528af7-35d9-46aa-867f-f62e3efc58dc
 
 number_webserver_instances: 1
 domain_name: tehiku.radio

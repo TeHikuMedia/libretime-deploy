@@ -7,3 +7,8 @@ script_dir: /home/ubuntu/media_import
 sync_dir: /home/ubuntu/sync
 sync_config: "/etc/resilio-sync/config.json"
 db_dir: "{{sync_dir}}/TeHikuRadioDB"
+
+db_name: airtime
+db_user_name: airtimeU
+
+delete_database: yes

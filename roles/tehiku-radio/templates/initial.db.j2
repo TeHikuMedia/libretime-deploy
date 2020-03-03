@@ -1,0 +1,3403 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 11.5 (Ubuntu 11.5-0ubuntu0.19.04.1)
+-- Dumped by pg_dump version 11.5 (Ubuntu 11.5-0ubuntu0.19.04.1)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: cc_block; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.cc_block (
+    id integer NOT NULL,
+    name character varying(255) DEFAULT ''::character varying NOT NULL,
+    mtime timestamp(6) without time zone,
+    utime timestamp(6) without time zone,
+    creator_id integer,
+    description character varying(512),
+    length interval DEFAULT '00:00:00'::interval,
+    type character varying(7) DEFAULT 'dynamic'::character varying
+);
+
+
+ALTER TABLE public.cc_block OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_block_id_seq; Type: SEQUENCE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE SEQUENCE public.cc_block_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cc_block_id_seq OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_block_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER SEQUENCE public.cc_block_id_seq OWNED BY public.cc_block.id;
+
+
+--
+-- Name: cc_blockcontents; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.cc_blockcontents (
+    id integer NOT NULL,
+    block_id integer,
+    file_id integer,
+    "position" integer,
+    trackoffset double precision DEFAULT 0 NOT NULL,
+    cliplength interval DEFAULT '00:00:00'::interval,
+    cuein interval DEFAULT '00:00:00'::interval,
+    cueout interval DEFAULT '00:00:00'::interval,
+    fadein time without time zone DEFAULT '00:00:00'::time without time zone,
+    fadeout time without time zone DEFAULT '00:00:00'::time without time zone
+);
+
+
+ALTER TABLE public.cc_blockcontents OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_blockcontents_id_seq; Type: SEQUENCE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE SEQUENCE public.cc_blockcontents_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cc_blockcontents_id_seq OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_blockcontents_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER SEQUENCE public.cc_blockcontents_id_seq OWNED BY public.cc_blockcontents.id;
+
+
+--
+-- Name: cc_blockcriteria; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.cc_blockcriteria (
+    id integer NOT NULL,
+    criteria character varying(32) NOT NULL,
+    modifier character varying(16) NOT NULL,
+    value character varying(512) NOT NULL,
+    extra character varying(512),
+    criteriagroup integer,
+    block_id integer NOT NULL
+);
+
+
+ALTER TABLE public.cc_blockcriteria OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_blockcriteria_id_seq; Type: SEQUENCE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE SEQUENCE public.cc_blockcriteria_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cc_blockcriteria_id_seq OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_blockcriteria_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER SEQUENCE public.cc_blockcriteria_id_seq OWNED BY public.cc_blockcriteria.id;
+
+
+--
+-- Name: cc_country; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.cc_country (
+    isocode character(3) NOT NULL,
+    name character varying(255) NOT NULL
+);
+
+
+ALTER TABLE public.cc_country OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_files; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.cc_files (
+    id integer NOT NULL,
+    name character varying(255) DEFAULT ''::character varying NOT NULL,
+    mime character varying(255) DEFAULT ''::character varying NOT NULL,
+    ftype character varying(128) DEFAULT ''::character varying NOT NULL,
+    directory integer,
+    filepath text DEFAULT ''::text,
+    import_status integer DEFAULT 1 NOT NULL,
+    currentlyaccessing integer DEFAULT 0 NOT NULL,
+    editedby integer,
+    mtime timestamp(6) without time zone,
+    utime timestamp(6) without time zone,
+    lptime timestamp(6) without time zone,
+    md5 character(32),
+    track_title character varying(512),
+    artist_name character varying(512),
+    bit_rate integer,
+    sample_rate integer,
+    format character varying(128),
+    length interval DEFAULT '00:00:00'::interval,
+    album_title character varying(512),
+    genre character varying(64),
+    comments text,
+    year character varying(16),
+    track_number integer,
+    channels integer,
+    url character varying(1024),
+    bpm integer,
+    rating character varying(8),
+    encoded_by character varying(255),
+    disc_number character varying(8),
+    mood character varying(64),
+    label character varying(512),
+    composer character varying(512),
+    encoder character varying(64),
+    checksum character varying(256),
+    lyrics text,
+    orchestra character varying(512),
+    conductor character varying(512),
+    lyricist character varying(512),
+    original_lyricist character varying(512),
+    radio_station_name character varying(512),
+    info_url character varying(512),
+    artist_url character varying(512),
+    audio_source_url character varying(512),
+    radio_station_url character varying(512),
+    buy_this_url character varying(512),
+    isrc_number character varying(512),
+    catalog_number character varying(512),
+    original_artist character varying(512),
+    copyright character varying(512),
+    report_datetime character varying(32),
+    report_location character varying(512),
+    report_organization character varying(512),
+    subject character varying(512),
+    contributor character varying(512),
+    language character varying(512),
+    file_exists boolean DEFAULT true,
+    soundcloud_id integer,
+    soundcloud_error_code integer,
+    soundcloud_error_msg character varying(512),
+    soundcloud_link_to_file character varying(4096),
+    soundcloud_upload_time timestamp(6) without time zone,
+    replay_gain numeric,
+    owner_id integer,
+    cuein interval DEFAULT '00:00:00'::interval,
+    cueout interval DEFAULT '00:00:00'::interval,
+    silan_check boolean DEFAULT false,
+    hidden boolean DEFAULT false,
+    is_scheduled boolean DEFAULT false,
+    is_playlist boolean DEFAULT false,
+    filesize integer DEFAULT 0 NOT NULL,
+    description character varying(512),
+    artwork character varying(512)
+);
+
+
+ALTER TABLE public.cc_files OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_files_id_seq; Type: SEQUENCE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE SEQUENCE public.cc_files_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cc_files_id_seq OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_files_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER SEQUENCE public.cc_files_id_seq OWNED BY public.cc_files.id;
+
+
+--
+-- Name: cc_listener_count; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.cc_listener_count (
+    id integer NOT NULL,
+    timestamp_id integer NOT NULL,
+    mount_name_id integer NOT NULL,
+    listener_count integer NOT NULL
+);
+
+
+ALTER TABLE public.cc_listener_count OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_listener_count_id_seq; Type: SEQUENCE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE SEQUENCE public.cc_listener_count_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cc_listener_count_id_seq OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_listener_count_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER SEQUENCE public.cc_listener_count_id_seq OWNED BY public.cc_listener_count.id;
+
+
+--
+-- Name: cc_live_log; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.cc_live_log (
+    id integer NOT NULL,
+    state character varying(32) NOT NULL,
+    start_time timestamp without time zone NOT NULL,
+    end_time timestamp without time zone
+);
+
+
+ALTER TABLE public.cc_live_log OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_live_log_id_seq; Type: SEQUENCE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE SEQUENCE public.cc_live_log_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cc_live_log_id_seq OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_live_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER SEQUENCE public.cc_live_log_id_seq OWNED BY public.cc_live_log.id;
+
+
+--
+-- Name: cc_login_attempts; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.cc_login_attempts (
+    ip character varying(32) NOT NULL,
+    attempts integer DEFAULT 0
+);
+
+
+ALTER TABLE public.cc_login_attempts OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_mount_name; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.cc_mount_name (
+    id integer NOT NULL,
+    mount_name character varying NOT NULL
+);
+
+
+ALTER TABLE public.cc_mount_name OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_mount_name_id_seq; Type: SEQUENCE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE SEQUENCE public.cc_mount_name_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cc_mount_name_id_seq OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_mount_name_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER SEQUENCE public.cc_mount_name_id_seq OWNED BY public.cc_mount_name.id;
+
+
+--
+-- Name: cc_music_dirs; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.cc_music_dirs (
+    id integer NOT NULL,
+    directory text,
+    type character varying(255),
+    "exists" boolean DEFAULT true,
+    watched boolean DEFAULT true
+);
+
+
+ALTER TABLE public.cc_music_dirs OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_music_dirs_id_seq; Type: SEQUENCE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE SEQUENCE public.cc_music_dirs_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cc_music_dirs_id_seq OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_music_dirs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER SEQUENCE public.cc_music_dirs_id_seq OWNED BY public.cc_music_dirs.id;
+
+
+--
+-- Name: cc_perms; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.cc_perms (
+    permid integer NOT NULL,
+    subj integer,
+    action character varying(20),
+    obj integer,
+    type character(1)
+);
+
+
+ALTER TABLE public.cc_perms OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_playlist; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.cc_playlist (
+    id integer NOT NULL,
+    name character varying(255) DEFAULT ''::character varying NOT NULL,
+    mtime timestamp(6) without time zone,
+    utime timestamp(6) without time zone,
+    creator_id integer,
+    description character varying(512),
+    length interval DEFAULT '00:00:00'::interval
+);
+
+
+ALTER TABLE public.cc_playlist OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_playlist_id_seq; Type: SEQUENCE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE SEQUENCE public.cc_playlist_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cc_playlist_id_seq OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_playlist_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER SEQUENCE public.cc_playlist_id_seq OWNED BY public.cc_playlist.id;
+
+
+--
+-- Name: cc_playlistcontents; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.cc_playlistcontents (
+    id integer NOT NULL,
+    playlist_id integer,
+    file_id integer,
+    block_id integer,
+    stream_id integer,
+    type smallint DEFAULT 0 NOT NULL,
+    "position" integer,
+    trackoffset double precision DEFAULT 0 NOT NULL,
+    cliplength interval DEFAULT '00:00:00'::interval,
+    cuein interval DEFAULT '00:00:00'::interval,
+    cueout interval DEFAULT '00:00:00'::interval,
+    fadein time without time zone DEFAULT '00:00:00'::time without time zone,
+    fadeout time without time zone DEFAULT '00:00:00'::time without time zone
+);
+
+
+ALTER TABLE public.cc_playlistcontents OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_playlistcontents_id_seq; Type: SEQUENCE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE SEQUENCE public.cc_playlistcontents_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cc_playlistcontents_id_seq OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_playlistcontents_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER SEQUENCE public.cc_playlistcontents_id_seq OWNED BY public.cc_playlistcontents.id;
+
+
+--
+-- Name: cc_playout_history; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.cc_playout_history (
+    id integer NOT NULL,
+    file_id integer,
+    starts timestamp without time zone NOT NULL,
+    ends timestamp without time zone,
+    instance_id integer
+);
+
+
+ALTER TABLE public.cc_playout_history OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_playout_history_id_seq; Type: SEQUENCE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE SEQUENCE public.cc_playout_history_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cc_playout_history_id_seq OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_playout_history_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER SEQUENCE public.cc_playout_history_id_seq OWNED BY public.cc_playout_history.id;
+
+
+--
+-- Name: cc_playout_history_metadata; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.cc_playout_history_metadata (
+    id integer NOT NULL,
+    history_id integer NOT NULL,
+    key character varying(128) NOT NULL,
+    value character varying(128) NOT NULL
+);
+
+
+ALTER TABLE public.cc_playout_history_metadata OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_playout_history_metadata_id_seq; Type: SEQUENCE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE SEQUENCE public.cc_playout_history_metadata_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cc_playout_history_metadata_id_seq OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_playout_history_metadata_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER SEQUENCE public.cc_playout_history_metadata_id_seq OWNED BY public.cc_playout_history_metadata.id;
+
+
+--
+-- Name: cc_playout_history_template; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.cc_playout_history_template (
+    id integer NOT NULL,
+    name character varying(128) NOT NULL,
+    type character varying(35) NOT NULL
+);
+
+
+ALTER TABLE public.cc_playout_history_template OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_playout_history_template_field; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.cc_playout_history_template_field (
+    id integer NOT NULL,
+    template_id integer NOT NULL,
+    name character varying(128) NOT NULL,
+    label character varying(128) NOT NULL,
+    type character varying(128) NOT NULL,
+    is_file_md boolean DEFAULT false NOT NULL,
+    "position" integer NOT NULL
+);
+
+
+ALTER TABLE public.cc_playout_history_template_field OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_playout_history_template_field_id_seq; Type: SEQUENCE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE SEQUENCE public.cc_playout_history_template_field_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cc_playout_history_template_field_id_seq OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_playout_history_template_field_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER SEQUENCE public.cc_playout_history_template_field_id_seq OWNED BY public.cc_playout_history_template_field.id;
+
+
+--
+-- Name: cc_playout_history_template_id_seq; Type: SEQUENCE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE SEQUENCE public.cc_playout_history_template_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cc_playout_history_template_id_seq OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_playout_history_template_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER SEQUENCE public.cc_playout_history_template_id_seq OWNED BY public.cc_playout_history_template.id;
+
+
+--
+-- Name: cc_pref; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.cc_pref (
+    id integer NOT NULL,
+    subjid integer,
+    keystr character varying(255),
+    valstr text
+);
+
+
+ALTER TABLE public.cc_pref OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_pref_id_seq; Type: SEQUENCE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE SEQUENCE public.cc_pref_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cc_pref_id_seq OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_pref_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER SEQUENCE public.cc_pref_id_seq OWNED BY public.cc_pref.id;
+
+
+--
+-- Name: cc_schedule; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.cc_schedule (
+    id integer NOT NULL,
+    starts timestamp without time zone NOT NULL,
+    ends timestamp without time zone NOT NULL,
+    file_id integer,
+    stream_id integer,
+    clip_length interval DEFAULT '00:00:00'::interval,
+    fade_in time without time zone DEFAULT '00:00:00'::time without time zone,
+    fade_out time without time zone DEFAULT '00:00:00'::time without time zone,
+    cue_in interval NOT NULL,
+    cue_out interval NOT NULL,
+    media_item_played boolean DEFAULT false,
+    instance_id integer NOT NULL,
+    playout_status smallint DEFAULT 1 NOT NULL,
+    broadcasted smallint DEFAULT 0 NOT NULL,
+    "position" integer DEFAULT 0 NOT NULL
+);
+
+
+ALTER TABLE public.cc_schedule OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_schedule_id_seq; Type: SEQUENCE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE SEQUENCE public.cc_schedule_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cc_schedule_id_seq OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_schedule_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER SEQUENCE public.cc_schedule_id_seq OWNED BY public.cc_schedule.id;
+
+
+--
+-- Name: cc_service_register; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.cc_service_register (
+    name character varying(32) NOT NULL,
+    ip character varying(45) NOT NULL
+);
+
+
+ALTER TABLE public.cc_service_register OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_sess; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.cc_sess (
+    sessid character(32) NOT NULL,
+    userid integer,
+    login character varying(255),
+    ts timestamp without time zone
+);
+
+
+ALTER TABLE public.cc_sess OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_show; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.cc_show (
+    id integer NOT NULL,
+    name character varying(255) DEFAULT ''::character varying NOT NULL,
+    url character varying(255) DEFAULT ''::character varying,
+    genre character varying(255) DEFAULT ''::character varying,
+    description character varying(8192),
+    color character varying(6),
+    background_color character varying(6),
+    live_stream_using_airtime_auth boolean DEFAULT false,
+    live_stream_using_custom_auth boolean DEFAULT false,
+    live_stream_user character varying(255),
+    live_stream_pass character varying(255),
+    linked boolean DEFAULT false NOT NULL,
+    is_linkable boolean DEFAULT true NOT NULL,
+    image_path character varying(255) DEFAULT ''::character varying,
+    has_autoplaylist boolean DEFAULT false NOT NULL,
+    autoplaylist_id integer,
+    autoplaylist_repeat boolean DEFAULT false NOT NULL
+);
+
+
+ALTER TABLE public.cc_show OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_show_days; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.cc_show_days (
+    id integer NOT NULL,
+    first_show date NOT NULL,
+    last_show date,
+    start_time time without time zone NOT NULL,
+    timezone character varying NOT NULL,
+    duration character varying NOT NULL,
+    day smallint,
+    repeat_type smallint NOT NULL,
+    next_pop_date date,
+    show_id integer NOT NULL,
+    record smallint DEFAULT 0
+);
+
+
+ALTER TABLE public.cc_show_days OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_show_days_id_seq; Type: SEQUENCE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE SEQUENCE public.cc_show_days_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cc_show_days_id_seq OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_show_days_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER SEQUENCE public.cc_show_days_id_seq OWNED BY public.cc_show_days.id;
+
+
+--
+-- Name: cc_show_hosts; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.cc_show_hosts (
+    id integer NOT NULL,
+    show_id integer NOT NULL,
+    subjs_id integer NOT NULL
+);
+
+
+ALTER TABLE public.cc_show_hosts OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_show_hosts_id_seq; Type: SEQUENCE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE SEQUENCE public.cc_show_hosts_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cc_show_hosts_id_seq OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_show_hosts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER SEQUENCE public.cc_show_hosts_id_seq OWNED BY public.cc_show_hosts.id;
+
+
+--
+-- Name: cc_show_id_seq; Type: SEQUENCE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE SEQUENCE public.cc_show_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cc_show_id_seq OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_show_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER SEQUENCE public.cc_show_id_seq OWNED BY public.cc_show.id;
+
+
+--
+-- Name: cc_show_instances; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.cc_show_instances (
+    id integer NOT NULL,
+    description character varying(8192) DEFAULT ''::character varying,
+    starts timestamp without time zone NOT NULL,
+    ends timestamp without time zone NOT NULL,
+    show_id integer NOT NULL,
+    record smallint DEFAULT 0,
+    rebroadcast smallint DEFAULT 0,
+    instance_id integer,
+    file_id integer,
+    time_filled interval DEFAULT '00:00:00'::interval,
+    created timestamp without time zone NOT NULL,
+    last_scheduled timestamp without time zone,
+    modified_instance boolean DEFAULT false NOT NULL,
+    autoplaylist_built boolean DEFAULT false NOT NULL
+);
+
+
+ALTER TABLE public.cc_show_instances OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_show_instances_id_seq; Type: SEQUENCE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE SEQUENCE public.cc_show_instances_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cc_show_instances_id_seq OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_show_instances_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER SEQUENCE public.cc_show_instances_id_seq OWNED BY public.cc_show_instances.id;
+
+
+--
+-- Name: cc_show_rebroadcast; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.cc_show_rebroadcast (
+    id integer NOT NULL,
+    day_offset character varying NOT NULL,
+    start_time time without time zone NOT NULL,
+    show_id integer NOT NULL
+);
+
+
+ALTER TABLE public.cc_show_rebroadcast OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_show_rebroadcast_id_seq; Type: SEQUENCE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE SEQUENCE public.cc_show_rebroadcast_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cc_show_rebroadcast_id_seq OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_show_rebroadcast_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER SEQUENCE public.cc_show_rebroadcast_id_seq OWNED BY public.cc_show_rebroadcast.id;
+
+
+--
+-- Name: cc_smemb; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.cc_smemb (
+    id integer NOT NULL,
+    uid integer DEFAULT 0 NOT NULL,
+    gid integer DEFAULT 0 NOT NULL,
+    level integer DEFAULT 0 NOT NULL,
+    mid integer
+);
+
+
+ALTER TABLE public.cc_smemb OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_stream_setting; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.cc_stream_setting (
+    keyname character varying(64) NOT NULL,
+    value character varying(255),
+    type character varying(16) NOT NULL
+);
+
+
+ALTER TABLE public.cc_stream_setting OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_subjs; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.cc_subjs (
+    id integer NOT NULL,
+    login character varying(255) DEFAULT ''::character varying NOT NULL,
+    pass character varying(255) DEFAULT ''::character varying NOT NULL,
+    type character(1) DEFAULT 'U'::bpchar NOT NULL,
+    first_name character varying(255) DEFAULT ''::character varying NOT NULL,
+    last_name character varying(255) DEFAULT ''::character varying NOT NULL,
+    lastlogin timestamp without time zone,
+    lastfail timestamp without time zone,
+    skype_contact character varying,
+    jabber_contact character varying,
+    email character varying,
+    cell_phone character varying,
+    login_attempts integer DEFAULT 0
+);
+
+
+ALTER TABLE public.cc_subjs OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_subjs_id_seq; Type: SEQUENCE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE SEQUENCE public.cc_subjs_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cc_subjs_id_seq OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_subjs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER SEQUENCE public.cc_subjs_id_seq OWNED BY public.cc_subjs.id;
+
+
+--
+-- Name: cc_subjs_token; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.cc_subjs_token (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    action character varying(255) NOT NULL,
+    token character varying(40) NOT NULL,
+    created timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE public.cc_subjs_token OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_subjs_token_id_seq; Type: SEQUENCE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE SEQUENCE public.cc_subjs_token_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cc_subjs_token_id_seq OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_subjs_token_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER SEQUENCE public.cc_subjs_token_id_seq OWNED BY public.cc_subjs_token.id;
+
+
+--
+-- Name: cc_timestamp; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.cc_timestamp (
+    id integer NOT NULL,
+    "timestamp" timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE public.cc_timestamp OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_timestamp_id_seq; Type: SEQUENCE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE SEQUENCE public.cc_timestamp_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cc_timestamp_id_seq OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_timestamp_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER SEQUENCE public.cc_timestamp_id_seq OWNED BY public.cc_timestamp.id;
+
+
+--
+-- Name: cc_webstream; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.cc_webstream (
+    id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    description character varying(255) NOT NULL,
+    url character varying(512) NOT NULL,
+    length interval DEFAULT '00:00:00'::interval NOT NULL,
+    creator_id integer NOT NULL,
+    mtime timestamp(6) without time zone NOT NULL,
+    utime timestamp(6) without time zone NOT NULL,
+    lptime timestamp(6) without time zone,
+    mime character varying
+);
+
+
+ALTER TABLE public.cc_webstream OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_webstream_id_seq; Type: SEQUENCE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE SEQUENCE public.cc_webstream_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cc_webstream_id_seq OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_webstream_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER SEQUENCE public.cc_webstream_id_seq OWNED BY public.cc_webstream.id;
+
+
+--
+-- Name: cc_webstream_metadata; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.cc_webstream_metadata (
+    id integer NOT NULL,
+    instance_id integer NOT NULL,
+    start_time timestamp without time zone NOT NULL,
+    liquidsoap_data character varying(1024) NOT NULL
+);
+
+
+ALTER TABLE public.cc_webstream_metadata OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_webstream_metadata_id_seq; Type: SEQUENCE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE SEQUENCE public.cc_webstream_metadata_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cc_webstream_metadata_id_seq OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cc_webstream_metadata_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER SEQUENCE public.cc_webstream_metadata_id_seq OWNED BY public.cc_webstream_metadata.id;
+
+
+--
+-- Name: celery_tasks; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.celery_tasks (
+    id integer NOT NULL,
+    task_id character varying(256) NOT NULL,
+    track_reference integer NOT NULL,
+    name character varying(256),
+    dispatch_time timestamp without time zone,
+    status character varying(256) NOT NULL
+);
+
+
+ALTER TABLE public.celery_tasks OWNER TO "{{db_user_name}}";
+
+--
+-- Name: celery_tasks_id_seq; Type: SEQUENCE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE SEQUENCE public.celery_tasks_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.celery_tasks_id_seq OWNER TO "{{db_user_name}}";
+
+--
+-- Name: celery_tasks_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER SEQUENCE public.celery_tasks_id_seq OWNED BY public.celery_tasks.id;
+
+
+--
+-- Name: cloud_file; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.cloud_file (
+    id integer NOT NULL,
+    storage_backend character varying(512) NOT NULL,
+    resource_id text NOT NULL,
+    cc_file_id integer
+);
+
+
+ALTER TABLE public.cloud_file OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cloud_file_id_seq; Type: SEQUENCE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE SEQUENCE public.cloud_file_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cloud_file_id_seq OWNER TO "{{db_user_name}}";
+
+--
+-- Name: cloud_file_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER SEQUENCE public.cloud_file_id_seq OWNED BY public.cloud_file.id;
+
+
+--
+-- Name: imported_podcast; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.imported_podcast (
+    id integer NOT NULL,
+    auto_ingest boolean DEFAULT false NOT NULL,
+    auto_ingest_timestamp timestamp without time zone,
+    album_override boolean DEFAULT false NOT NULL,
+    podcast_id integer NOT NULL
+);
+
+
+ALTER TABLE public.imported_podcast OWNER TO "{{db_user_name}}";
+
+--
+-- Name: imported_podcast_id_seq; Type: SEQUENCE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE SEQUENCE public.imported_podcast_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.imported_podcast_id_seq OWNER TO "{{db_user_name}}";
+
+--
+-- Name: imported_podcast_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER SEQUENCE public.imported_podcast_id_seq OWNED BY public.imported_podcast.id;
+
+
+--
+-- Name: podcast; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.podcast (
+    id integer NOT NULL,
+    url character varying(4096) NOT NULL,
+    title character varying(4096) NOT NULL,
+    creator character varying(4096),
+    description character varying(4096),
+    language character varying(4096),
+    copyright character varying(4096),
+    link character varying(4096),
+    itunes_author character varying(4096),
+    itunes_keywords character varying(4096),
+    itunes_summary character varying(4096),
+    itunes_subtitle character varying(4096),
+    itunes_category character varying(4096),
+    itunes_explicit character varying(4096),
+    owner integer
+);
+
+
+ALTER TABLE public.podcast OWNER TO "{{db_user_name}}";
+
+--
+-- Name: podcast_episodes; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.podcast_episodes (
+    id integer NOT NULL,
+    file_id integer,
+    podcast_id integer NOT NULL,
+    publication_date timestamp without time zone NOT NULL,
+    download_url character varying(4096) NOT NULL,
+    episode_guid character varying(4096) NOT NULL,
+    episode_title character varying(4096) NOT NULL,
+    episode_description text NOT NULL
+);
+
+
+ALTER TABLE public.podcast_episodes OWNER TO "{{db_user_name}}";
+
+--
+-- Name: podcast_episodes_id_seq; Type: SEQUENCE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE SEQUENCE public.podcast_episodes_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.podcast_episodes_id_seq OWNER TO "{{db_user_name}}";
+
+--
+-- Name: podcast_episodes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER SEQUENCE public.podcast_episodes_id_seq OWNED BY public.podcast_episodes.id;
+
+
+--
+-- Name: podcast_id_seq; Type: SEQUENCE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE SEQUENCE public.podcast_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.podcast_id_seq OWNER TO "{{db_user_name}}";
+
+--
+-- Name: podcast_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER SEQUENCE public.podcast_id_seq OWNED BY public.podcast.id;
+
+
+--
+-- Name: schedule_group_id_seq; Type: SEQUENCE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE SEQUENCE public.schedule_group_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.schedule_group_id_seq OWNER TO "{{db_user_name}}";
+
+--
+-- Name: show_group_id_seq; Type: SEQUENCE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE SEQUENCE public.show_group_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.show_group_id_seq OWNER TO "{{db_user_name}}";
+
+--
+-- Name: station_podcast; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.station_podcast (
+    id integer NOT NULL,
+    podcast_id integer NOT NULL
+);
+
+
+ALTER TABLE public.station_podcast OWNER TO "{{db_user_name}}";
+
+--
+-- Name: station_podcast_id_seq; Type: SEQUENCE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE SEQUENCE public.station_podcast_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.station_podcast_id_seq OWNER TO "{{db_user_name}}";
+
+--
+-- Name: station_podcast_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER SEQUENCE public.station_podcast_id_seq OWNED BY public.station_podcast.id;
+
+
+--
+-- Name: third_party_track_references; Type: TABLE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE TABLE public.third_party_track_references (
+    id integer NOT NULL,
+    service character varying(256) NOT NULL,
+    foreign_id character varying(256),
+    file_id integer DEFAULT 0,
+    upload_time timestamp without time zone,
+    status character varying(256)
+);
+
+
+ALTER TABLE public.third_party_track_references OWNER TO "{{db_user_name}}";
+
+--
+-- Name: third_party_track_references_id_seq; Type: SEQUENCE; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE SEQUENCE public.third_party_track_references_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.third_party_track_references_id_seq OWNER TO "{{db_user_name}}";
+
+--
+-- Name: third_party_track_references_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER SEQUENCE public.third_party_track_references_id_seq OWNED BY public.third_party_track_references.id;
+
+
+--
+-- Name: cc_block id; Type: DEFAULT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_block ALTER COLUMN id SET DEFAULT nextval('public.cc_block_id_seq'::regclass);
+
+
+--
+-- Name: cc_blockcontents id; Type: DEFAULT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_blockcontents ALTER COLUMN id SET DEFAULT nextval('public.cc_blockcontents_id_seq'::regclass);
+
+
+--
+-- Name: cc_blockcriteria id; Type: DEFAULT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_blockcriteria ALTER COLUMN id SET DEFAULT nextval('public.cc_blockcriteria_id_seq'::regclass);
+
+
+--
+-- Name: cc_files id; Type: DEFAULT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_files ALTER COLUMN id SET DEFAULT nextval('public.cc_files_id_seq'::regclass);
+
+
+--
+-- Name: cc_listener_count id; Type: DEFAULT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_listener_count ALTER COLUMN id SET DEFAULT nextval('public.cc_listener_count_id_seq'::regclass);
+
+
+--
+-- Name: cc_live_log id; Type: DEFAULT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_live_log ALTER COLUMN id SET DEFAULT nextval('public.cc_live_log_id_seq'::regclass);
+
+
+--
+-- Name: cc_mount_name id; Type: DEFAULT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_mount_name ALTER COLUMN id SET DEFAULT nextval('public.cc_mount_name_id_seq'::regclass);
+
+
+--
+-- Name: cc_music_dirs id; Type: DEFAULT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_music_dirs ALTER COLUMN id SET DEFAULT nextval('public.cc_music_dirs_id_seq'::regclass);
+
+
+--
+-- Name: cc_playlist id; Type: DEFAULT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_playlist ALTER COLUMN id SET DEFAULT nextval('public.cc_playlist_id_seq'::regclass);
+
+
+--
+-- Name: cc_playlistcontents id; Type: DEFAULT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_playlistcontents ALTER COLUMN id SET DEFAULT nextval('public.cc_playlistcontents_id_seq'::regclass);
+
+
+--
+-- Name: cc_playout_history id; Type: DEFAULT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_playout_history ALTER COLUMN id SET DEFAULT nextval('public.cc_playout_history_id_seq'::regclass);
+
+
+--
+-- Name: cc_playout_history_metadata id; Type: DEFAULT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_playout_history_metadata ALTER COLUMN id SET DEFAULT nextval('public.cc_playout_history_metadata_id_seq'::regclass);
+
+
+--
+-- Name: cc_playout_history_template id; Type: DEFAULT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_playout_history_template ALTER COLUMN id SET DEFAULT nextval('public.cc_playout_history_template_id_seq'::regclass);
+
+
+--
+-- Name: cc_playout_history_template_field id; Type: DEFAULT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_playout_history_template_field ALTER COLUMN id SET DEFAULT nextval('public.cc_playout_history_template_field_id_seq'::regclass);
+
+
+--
+-- Name: cc_pref id; Type: DEFAULT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_pref ALTER COLUMN id SET DEFAULT nextval('public.cc_pref_id_seq'::regclass);
+
+
+--
+-- Name: cc_schedule id; Type: DEFAULT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_schedule ALTER COLUMN id SET DEFAULT nextval('public.cc_schedule_id_seq'::regclass);
+
+
+--
+-- Name: cc_show id; Type: DEFAULT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_show ALTER COLUMN id SET DEFAULT nextval('public.cc_show_id_seq'::regclass);
+
+
+--
+-- Name: cc_show_days id; Type: DEFAULT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_show_days ALTER COLUMN id SET DEFAULT nextval('public.cc_show_days_id_seq'::regclass);
+
+
+--
+-- Name: cc_show_hosts id; Type: DEFAULT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_show_hosts ALTER COLUMN id SET DEFAULT nextval('public.cc_show_hosts_id_seq'::regclass);
+
+
+--
+-- Name: cc_show_instances id; Type: DEFAULT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_show_instances ALTER COLUMN id SET DEFAULT nextval('public.cc_show_instances_id_seq'::regclass);
+
+
+--
+-- Name: cc_show_rebroadcast id; Type: DEFAULT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_show_rebroadcast ALTER COLUMN id SET DEFAULT nextval('public.cc_show_rebroadcast_id_seq'::regclass);
+
+
+--
+-- Name: cc_subjs id; Type: DEFAULT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_subjs ALTER COLUMN id SET DEFAULT nextval('public.cc_subjs_id_seq'::regclass);
+
+
+--
+-- Name: cc_subjs_token id; Type: DEFAULT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_subjs_token ALTER COLUMN id SET DEFAULT nextval('public.cc_subjs_token_id_seq'::regclass);
+
+
+--
+-- Name: cc_timestamp id; Type: DEFAULT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_timestamp ALTER COLUMN id SET DEFAULT nextval('public.cc_timestamp_id_seq'::regclass);
+
+
+--
+-- Name: cc_webstream id; Type: DEFAULT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_webstream ALTER COLUMN id SET DEFAULT nextval('public.cc_webstream_id_seq'::regclass);
+
+
+--
+-- Name: cc_webstream_metadata id; Type: DEFAULT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_webstream_metadata ALTER COLUMN id SET DEFAULT nextval('public.cc_webstream_metadata_id_seq'::regclass);
+
+
+--
+-- Name: celery_tasks id; Type: DEFAULT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.celery_tasks ALTER COLUMN id SET DEFAULT nextval('public.celery_tasks_id_seq'::regclass);
+
+
+--
+-- Name: cloud_file id; Type: DEFAULT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cloud_file ALTER COLUMN id SET DEFAULT nextval('public.cloud_file_id_seq'::regclass);
+
+
+--
+-- Name: imported_podcast id; Type: DEFAULT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.imported_podcast ALTER COLUMN id SET DEFAULT nextval('public.imported_podcast_id_seq'::regclass);
+
+
+--
+-- Name: podcast id; Type: DEFAULT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.podcast ALTER COLUMN id SET DEFAULT nextval('public.podcast_id_seq'::regclass);
+
+
+--
+-- Name: podcast_episodes id; Type: DEFAULT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.podcast_episodes ALTER COLUMN id SET DEFAULT nextval('public.podcast_episodes_id_seq'::regclass);
+
+
+--
+-- Name: station_podcast id; Type: DEFAULT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.station_podcast ALTER COLUMN id SET DEFAULT nextval('public.station_podcast_id_seq'::regclass);
+
+
+--
+-- Name: third_party_track_references id; Type: DEFAULT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.third_party_track_references ALTER COLUMN id SET DEFAULT nextval('public.third_party_track_references_id_seq'::regclass);
+
+
+--
+-- Data for Name: cc_block; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.cc_block (id, name, mtime, utime, creator_id, description, length, type) FROM stdin;
+\.
+
+
+--
+-- Data for Name: cc_blockcontents; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.cc_blockcontents (id, block_id, file_id, "position", trackoffset, cliplength, cuein, cueout, fadein, fadeout) FROM stdin;
+\.
+
+
+--
+-- Data for Name: cc_blockcriteria; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.cc_blockcriteria (id, criteria, modifier, value, extra, criteriagroup, block_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: cc_country; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.cc_country (isocode, name) FROM stdin;
+AFG Afghanistan 
+ALA Åland Islands
+ALB Albania 
+DZA Algeria 
+ASM American Samoa 
+AND Andorra 
+AGO Angola 
+AIA Anguilla 
+ATG Antigua and Barbuda 
+ARG Argentina 
+ARM Armenia 
+ABW Aruba 
+AUS Australia 
+AUT Austria 
+AZE Azerbaijan 
+BHS Bahamas 
+BHR Bahrain 
+BGD Bangladesh 
+BRB Barbados 
+BLR Belarus 
+BEL Belgium 
+BLZ Belize 
+BEN Benin 
+BMU Bermuda 
+BTN Bhutan 
+BOL Bolivia (Plurinational State of) 
+BES Bonaire, Saint Eustatius and Saba
+BIH Bosnia and Herzegovina 
+BWA Botswana 
+BRA Brazil 
+VGB British Virgin Islands 
+BRN Brunei Darussalam 
+BGR Bulgaria 
+BFA Burkina Faso 
+BDI Burundi 
+KHM Cambodia 
+CMR Cameroon 
+CAN Canada 
+CPV Cape Verde 
+CYM Cayman Islands 
+CAF Central African Republic 
+TCD Chad 
+CHL Chile 
+CHN China 
+HKG China, Hong Kong Special Administrative Region
+MAC China, Macao Special Administrative Region
+COL Colombia 
+COM Comoros 
+COG Congo 
+COK Cook Islands 
+CRI Costa Rica 
+CIV Côte d'Ivoire 
+HRV Croatia 
+CUB Cuba 
+CUW Curaçao
+CYP Cyprus 
+CZE Czech Republic 
+PRK Democratic People's Republic of Korea 
+COD Democratic Republic of the Congo 
+DNK Denmark 
+DJI Djibouti 
+DMA Dominica 
+DOM Dominican Republic 
+ECU Ecuador 
+EGY Egypt 
+SLV El Salvador 
+GNQ Equatorial Guinea 
+ERI Eritrea 
+EST Estonia 
+ETH Ethiopia 
+FRO Faeroe Islands 
+FLK Falkland Islands (Malvinas) 
+FJI Fiji 
+FIN Finland 
+FRA France 
+GUF French Guiana 
+PYF French Polynesia 
+GAB Gabon 
+GMB Gambia 
+GEO Georgia 
+DEU Germany 
+GHA Ghana 
+GIB Gibraltar 
+GRC Greece 
+GRL Greenland 
+GRD Grenada 
+GLP Guadeloupe 
+GUM Guam 
+GTM Guatemala 
+GGY Guernsey
+GIN Guinea 
+GNB Guinea-Bissau 
+GUY Guyana 
+HTI Haiti 
+VAT Holy See 
+HND Honduras 
+HUN Hungary 
+ISL Iceland 
+IND India 
+IDN Indonesia 
+IRN Iran (Islamic Republic of)
+IRQ Iraq 
+IRL Ireland 
+IMN Isle of Man 
+ISR Israel 
+ITA Italy 
+JAM Jamaica 
+JPN Japan 
+JEY Jersey
+JOR Jordan 
+KAZ Kazakhstan 
+KEN Kenya 
+KIR Kiribati 
+KWT Kuwait 
+KGZ Kyrgyzstan 
+LAO Lao People's Democratic Republic 
+LVA Latvia 
+LBN Lebanon 
+LSO Lesotho 
+LBR Liberia 
+LBY Libyan Arab Jamahiriya 
+LIE Liechtenstein 
+LTU Lithuania 
+LUX Luxembourg 
+MDG Madagascar 
+MWI Malawi 
+MYS Malaysia 
+MDV Maldives 
+MLI Mali 
+MLT Malta 
+MHL Marshall Islands 
+MTQ Martinique 
+MRT Mauritania 
+MUS Mauritius 
+MYT Mayotte
+MEX Mexico 
+FSM Micronesia (Federated States of)
+MCO Monaco 
+MNG Mongolia 
+MNE Montenegro
+MSR Montserrat 
+MAR Morocco 
+MOZ Mozambique 
+MMR Myanmar 
+NAM Namibia 
+NRU Nauru 
+NPL Nepal 
+NLD Netherlands 
+NCL New Caledonia 
+NZL New Zealand 
+NIC Nicaragua 
+NER Niger 
+NGA Nigeria 
+NIU Niue 
+NFK Norfolk Island 
+MNP Northern Mariana Islands 
+NOR Norway 
+PSE Occupied Palestinian Territory 
+OMN Oman 
+PAK Pakistan 
+PLW Palau 
+PAN Panama 
+PNG Papua New Guinea 
+PRY Paraguay 
+PER Peru 
+PHL Philippines 
+PCN Pitcairn 
+POL Poland 
+PRT Portugal 
+PRI Puerto Rico 
+QAT Qatar 
+KOR Republic of Korea 
+MDA Republic of Moldova
+REU Réunion 
+ROU Romania 
+RUS Russian Federation 
+RWA Rwanda 
+BLM Saint-Barthélemy
+SHN Saint Helena 
+KNA Saint Kitts and Nevis 
+LCA Saint Lucia 
+MAF Saint-Martin (French part)
+SPM Saint Pierre and Miquelon 
+VCT Saint Vincent and the Grenadines 
+WSM Samoa 
+SMR San Marino 
+STP Sao Tome and Principe 
+SAU Saudi Arabia 
+SEN Senegal 
+SRB Serbia 
+SYC Seychelles 
+SLE Sierra Leone 
+SGP Singapore 
+SXM Sint Maarten (Dutch part)
+SVK Slovakia 
+SVN Slovenia 
+SLB Solomon Islands 
+SOM Somalia 
+ZAF South Africa 
+ESP Spain 
+LKA Sri Lanka 
+SDN Sudan 
+SUR Suriname 
+SJM Svalbard and Jan Mayen Islands 
+SWZ Swaziland 
+SWE Sweden 
+CHE Switzerland 
+SYR Syrian Arab Republic 
+TJK Tajikistan 
+THA Thailand 
+MKD The former Yugoslav Republic of Macedonia 
+TLS Timor-Leste
+TGO Togo 
+TKL Tokelau 
+TON Tonga 
+TTO Trinidad and Tobago 
+TUN Tunisia 
+TUR Turkey 
+TKM Turkmenistan 
+TCA Turks and Caicos Islands 
+TUV Tuvalu 
+UGA Uganda 
+UKR Ukraine 
+ARE United Arab Emirates 
+GBR United Kingdom of Great Britain and Northern Ireland
+TZA United Republic of Tanzania 
+USA United States of America
+VIR United States Virgin Islands 
+URY Uruguay 
+UZB Uzbekistan 
+VUT Vanuatu 
+VEN Venezuela (Bolivarian Republic of)
+VNM Viet Nam 
+WLF Wallis and Futuna Islands 
+ESH Western Sahara 
+YEM Yemen 
+ZMB Zambia 
+ZWE Zimbabwe 
+\.
+
+
+--
+-- Data for Name: cc_files; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.cc_files (id, name, mime, ftype, directory, filepath, import_status, currentlyaccessing, editedby, mtime, utime, lptime, md5, track_title, artist_name, bit_rate, sample_rate, format, length, album_title, genre, comments, year, track_number, channels, url, bpm, rating, encoded_by, disc_number, mood, label, composer, encoder, checksum, lyrics, orchestra, conductor, lyricist, original_lyricist, radio_station_name, info_url, artist_url, audio_source_url, radio_station_url, buy_this_url, isrc_number, catalog_number, original_artist, copyright, report_datetime, report_location, report_organization, subject, contributor, language, file_exists, soundcloud_id, soundcloud_error_code, soundcloud_error_msg, soundcloud_link_to_file, soundcloud_upload_time, replay_gain, owner_id, cuein, cueout, silan_check, hidden, is_scheduled, is_playlist, filesize, description, artwork) FROM stdin;
+\.
+
+
+--
+-- Data for Name: cc_listener_count; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.cc_listener_count (id, timestamp_id, mount_name_id, listener_count) FROM stdin;
+\.
+
+
+--
+-- Data for Name: cc_live_log; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.cc_live_log (id, state, start_time, end_time) FROM stdin;
+1   S   2020-03-02 02:56:36.663335  \N
+\.
+
+
+--
+-- Data for Name: cc_login_attempts; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.cc_login_attempts (ip, attempts) FROM stdin;
+\.
+
+
+--
+-- Data for Name: cc_mount_name; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.cc_mount_name (id, mount_name) FROM stdin;
+\.
+
+
+--
+-- Data for Name: cc_music_dirs; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.cc_music_dirs (id, directory, type, "exists", watched) FROM stdin;
+1   /srv/airtime/stor/  stor    t   t
+\.
+
+
+--
+-- Data for Name: cc_perms; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.cc_perms (permid, subj, action, obj, type) FROM stdin;
+\.
+
+
+--
+-- Data for Name: cc_playlist; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.cc_playlist (id, name, mtime, utime, creator_id, description, length) FROM stdin;
+\.
+
+
+--
+-- Data for Name: cc_playlistcontents; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.cc_playlistcontents (id, playlist_id, file_id, block_id, stream_id, type, "position", trackoffset, cliplength, cuein, cueout, fadein, fadeout) FROM stdin;
+\.
+
+
+--
+-- Data for Name: cc_playout_history; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.cc_playout_history (id, file_id, starts, ends, instance_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: cc_playout_history_metadata; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.cc_playout_history_metadata (id, history_id, key, value) FROM stdin;
+\.
+
+
+--
+-- Data for Name: cc_playout_history_template; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.cc_playout_history_template (id, name, type) FROM stdin;
+\.
+
+
+--
+-- Data for Name: cc_playout_history_template_field; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.cc_playout_history_template_field (id, template_id, name, label, type, is_file_md, "position") FROM stdin;
+\.
+
+
+--
+-- Data for Name: cc_pref; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.cc_pref (id, subjid, keystr, valstr) FROM stdin;
+2   \N  enable_replay_gain  1
+3   \N  scheduled_play_switch   on
+4   \N  stream_type ogg, mp3, opus, aac
+5   \N  stream_bitrate  24, 32, 48, 64, 96, 128, 160, 192, 224, 256, 320
+6   \N  num_of_streams  3
+7   \N  max_bitrate 320
+8   \N  plan_level  disabled
+12  \N  import_timestamp    0
+13  \N  whats_new_dialog_viewed 1
+1   \N  schema_version  3.0.0-alpha.9.1
+18  \N  podcast_poll_lock   1583117807.7064
+20  \N  station_podcast_download_reset_timer    1583117807.7248
+19  \N  station_podcast_download_counter    0
+21  \N  bandwidth_limit_reset_timer 1583117807.7272
+22  \N  station_podcast_id  1
+23  \N  station_podcast_download_key    2rum77HEYCH2
+10  1   user_locale en_US
+24  \N  latest_version_nextcheck    1583722628
+25  \N  latest_version  ["3.0.0-alpha.8","3.0.0-alpha.7","3.0.0-alpha.6","3.0.0-alpha.5","3.0.0-alpha.4","3.0.0-alpha.3","3.0.0-alpha.2","3.0.0-alpha.1","3.0.0-alpha"]
+26  1   library_datatable   a:7:{s:7:"iCreate";s:13:"1583117829426";s:6:"iStart";s:1:"0";s:4:"iEnd";s:1:"0";s:7:"iLength";s:3:"100";s:9:"aaSorting";a:1:{i:0;a:3:{i:0;s:2:"30";i:1;s:4:"desc";i:2;s:1:"1";}}s:9:"abVisCols";a:34:{i:0;s:5:"false";i:1;s:4:"true";i:2;s:4:"true";i:3;s:5:"false";i:4;s:5:"false";i:5;s:4:"true";i:6;s:5:"false";i:7;s:5:"false";i:8;s:5:"false";i:9;s:5:"false";i:10;s:5:"false";i:11;s:5:"false";i:12;s:5:"false";i:13;s:5:"false";i:14;s:5:"false";i:15;s:5:"false";i:16;s:5:"false";i:17;s:4:"true";i:18;s:5:"false";i:19;s:4:"true";i:20;s:5:"false";i:21;s:5:"false";i:22;s:5:"false";i:23;s:5:"false";i:24;s:5:"false";i:25;s:5:"false";i:26;s:5:"false";i:27;s:5:"false";i:28;s:5:"false";i:29;s:5:"false";i:30;s:4:"true";i:31;s:5:"false";i:32;s:5:"false";i:33;s:4:"true";}s:10:"ColReorder";a:34:{i:0;s:1:"0";i:1;s:1:"1";i:2;s:1:"2";i:3;s:1:"3";i:4;s:1:"4";i:5;s:1:"5";i:6;s:1:"6";i:7;s:1:"7";i:8;s:1:"8";i:9;s:1:"9";i:10;s:2:"10";i:11;s:2:"11";i:12;s:2:"12";i:13;s:2:"13";i:14;s:2:"14";i:15;s:2:"15";i:16;s:2:"16";i:17;s:2:"18";i:18;s:2:"19";i:19;s:2:"20";i:20;s:2:"21";i:21;s:2:"17";i:22;s:2:"22";i:23;s:2:"24";i:24;s:2:"25";i:25;s:2:"26";i:26;s:2:"27";i:27;s:2:"28";i:28;s:2:"29";i:29;s:2:"30";i:30;s:2:"23";i:31;s:2:"31";i:32;s:2:"32";i:33;s:2:"33";}}
+17  \N  autoplaylist_poll_lock  1583117868.0443
+16  \N  task_manager_lock   1583117898.2103
+28  \N  station_name    Te Hiku Radio
+29  \N  description Powered by LibreTime
+30  \N  default_crossfade_duration  0
+31  \N  default_fade_in 0.5
+32  \N  default_fade_out    0.5
+14  \N  podcast_album_override  1
+15  \N  podcast_auto_smartblock 0
+33  \N  intro_playlist  
+34  \N  outro_playlist  
+35  \N  third_party_api 1
+36  \N  allowed_cors_urls   
+9   \N  locale  en_GB
+11  \N  timezone    Pacific/Auckland
+37  \N  week_start_day  0
+38  \N  radio_page_display_login_button 1
+39  \N  tunein_enabled  0
+40  \N  tunein_station_id   
+41  \N  tunein_partner_key  
+42  \N  tunein_partner_id   
+\.
+
+
+--
+-- Data for Name: cc_schedule; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.cc_schedule (id, starts, ends, file_id, stream_id, clip_length, fade_in, fade_out, cue_in, cue_out, media_item_played, instance_id, playout_status, broadcasted, "position") FROM stdin;
+\.
+
+
+--
+-- Data for Name: cc_service_register; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.cc_service_register (name, ip) FROM stdin;
+\.
+
+
+--
+-- Data for Name: cc_sess; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.cc_sess (sessid, userid, login, ts) FROM stdin;
+\.
+
+
+--
+-- Data for Name: cc_show; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.cc_show (id, name, url, genre, description, color, background_color, live_stream_using_airtime_auth, live_stream_using_custom_auth, live_stream_user, live_stream_pass, linked, is_linkable, image_path, has_autoplaylist, autoplaylist_id, autoplaylist_repeat) FROM stdin;
+\.
+
+
+--
+-- Data for Name: cc_show_days; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.cc_show_days (id, first_show, last_show, start_time, timezone, duration, day, repeat_type, next_pop_date, show_id, record) FROM stdin;
+\.
+
+
+--
+-- Data for Name: cc_show_hosts; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.cc_show_hosts (id, show_id, subjs_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: cc_show_instances; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.cc_show_instances (id, description, starts, ends, show_id, record, rebroadcast, instance_id, file_id, time_filled, created, last_scheduled, modified_instance, autoplaylist_built) FROM stdin;
+\.
+
+
+--
+-- Data for Name: cc_show_rebroadcast; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.cc_show_rebroadcast (id, day_offset, start_time, show_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: cc_smemb; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.cc_smemb (id, uid, gid, level, mid) FROM stdin;
+\.
+
+
+--
+-- Data for Name: cc_stream_setting; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.cc_stream_setting (keyname, value, type) FROM stdin;
+off_air_meta    LibreTime - offline string
+output_sound_device false   boolean
+output_sound_device_type    ALSA    string
+icecast_vorbis_metadata false   boolean
+s1_enable   true    boolean
+s1_output   icecast string
+s1_type ogg string
+s1_bitrate  128 integer
+s1_host 127.0.0.1   string
+s1_port 8000    integer
+s1_user     string
+s1_pass hackme  string
+s1_admin_user   admin   string
+s1_admin_pass       string
+s1_mount    airtime_128 string
+s1_url  https://libretime.org   string
+s1_description  LibreTime Radio! Stream #1  string
+s1_genre    genre   string
+s2_enable   false   boolean
+s2_output   icecast string
+s2_type     string
+s2_bitrate      integer
+s2_host     string
+s2_port     integer
+s2_user     string
+s2_pass     string
+s2_admin_user   admin   string
+s2_admin_pass       string
+s2_mount        string
+s2_url      string
+s2_description      string
+s2_genre        string
+s3_enable   false   boolean
+s3_output   icecast string
+s3_type     string
+s3_bitrate      integer
+s3_host     string
+s3_port     integer
+s3_user     string
+s3_pass     string
+s3_admin_user   admin   string
+s3_admin_pass       string
+s3_mount        string
+s3_url      string
+s3_description      string
+s3_genre        string
+s1_name LibreTime!  string
+s2_name     string
+s3_name     string
+s1_channels stereo  string
+s2_channels stereo  string
+s3_channels stereo  string
+s4_enable   false   boolean
+s4_output   icecast string
+s4_name     string
+s4_type     string
+s4_bitrate      integer
+s4_host     string
+s4_port     integer
+s4_user     string
+s4_pass     string
+s4_admin_user   admin   string
+s4_admin_pass       string
+s4_mount        string
+s4_url      string
+s4_description      string
+s4_genre        string
+s4_channels stereo  string
+\.
+
+
+--
+-- Data for Name: cc_subjs; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.cc_subjs (id, login, pass, type, first_name, last_name, lastlogin, lastfail, skype_contact, jabber_contact, email, cell_phone, login_attempts) FROM stdin;
+1   admin   21232f297a57a5a743894a0e4a801fc3    A           \N  \N  \N  \N  \N  \N  0
+\.
+
+
+--
+-- Data for Name: cc_subjs_token; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.cc_subjs_token (id, user_id, action, token, created) FROM stdin;
+\.
+
+
+--
+-- Data for Name: cc_timestamp; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.cc_timestamp (id, "timestamp") FROM stdin;
+\.
+
+
+--
+-- Data for Name: cc_webstream; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.cc_webstream (id, name, description, url, length, creator_id, mtime, utime, lptime, mime) FROM stdin;
+\.
+
+
+--
+-- Data for Name: cc_webstream_metadata; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.cc_webstream_metadata (id, instance_id, start_time, liquidsoap_data) FROM stdin;
+\.
+
+
+--
+-- Data for Name: celery_tasks; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.celery_tasks (id, task_id, track_reference, name, dispatch_time, status) FROM stdin;
+\.
+
+
+--
+-- Data for Name: cloud_file; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.cloud_file (id, storage_backend, resource_id, cc_file_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: imported_podcast; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.imported_podcast (id, auto_ingest, auto_ingest_timestamp, album_override, podcast_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: podcast; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.podcast (id, url, title, creator, description, language, copyright, link, itunes_author, itunes_keywords, itunes_summary, itunes_subtitle, itunes_category, itunes_explicit, owner) FROM stdin;
+1   http://tehiku.radio/feeds/station-rss   My Station's Podcast        Powered by LibreTime    en  \N  http://tehiku.radio/    \N  \N  \N  \N  \N  \N  \N
+\.
+
+
+--
+-- Data for Name: podcast_episodes; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.podcast_episodes (id, file_id, podcast_id, publication_date, download_url, episode_guid, episode_title, episode_description) FROM stdin;
+\.
+
+
+--
+-- Data for Name: station_podcast; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.station_podcast (id, podcast_id) FROM stdin;
+1   1
+\.
+
+
+--
+-- Data for Name: third_party_track_references; Type: TABLE DATA; Schema: public; Owner: {{db_user_name}}
+--
+
+COPY public.third_party_track_references (id, service, foreign_id, file_id, upload_time, status) FROM stdin;
+\.
+
+
+--
+-- Name: cc_block_id_seq; Type: SEQUENCE SET; Schema: public; Owner: {{db_user_name}}
+--
+
+SELECT pg_catalog.setval('public.cc_block_id_seq', 1, false);
+
+
+--
+-- Name: cc_blockcontents_id_seq; Type: SEQUENCE SET; Schema: public; Owner: {{db_user_name}}
+--
+
+SELECT pg_catalog.setval('public.cc_blockcontents_id_seq', 1, false);
+
+
+--
+-- Name: cc_blockcriteria_id_seq; Type: SEQUENCE SET; Schema: public; Owner: {{db_user_name}}
+--
+
+SELECT pg_catalog.setval('public.cc_blockcriteria_id_seq', 1, false);
+
+
+--
+-- Name: cc_files_id_seq; Type: SEQUENCE SET; Schema: public; Owner: {{db_user_name}}
+--
+
+SELECT pg_catalog.setval('public.cc_files_id_seq', 1, false);
+
+
+--
+-- Name: cc_listener_count_id_seq; Type: SEQUENCE SET; Schema: public; Owner: {{db_user_name}}
+--
+
+SELECT pg_catalog.setval('public.cc_listener_count_id_seq', 1, false);
+
+
+--
+-- Name: cc_live_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: {{db_user_name}}
+--
+
+SELECT pg_catalog.setval('public.cc_live_log_id_seq', 1, true);
+
+
+--
+-- Name: cc_mount_name_id_seq; Type: SEQUENCE SET; Schema: public; Owner: {{db_user_name}}
+--
+
+SELECT pg_catalog.setval('public.cc_mount_name_id_seq', 1, false);
+
+
+--
+-- Name: cc_music_dirs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: {{db_user_name}}
+--
+
+SELECT pg_catalog.setval('public.cc_music_dirs_id_seq', 1, true);
+
+
+--
+-- Name: cc_playlist_id_seq; Type: SEQUENCE SET; Schema: public; Owner: {{db_user_name}}
+--
+
+SELECT pg_catalog.setval('public.cc_playlist_id_seq', 1, false);
+
+
+--
+-- Name: cc_playlistcontents_id_seq; Type: SEQUENCE SET; Schema: public; Owner: {{db_user_name}}
+--
+
+SELECT pg_catalog.setval('public.cc_playlistcontents_id_seq', 1, false);
+
+
+--
+-- Name: cc_playout_history_id_seq; Type: SEQUENCE SET; Schema: public; Owner: {{db_user_name}}
+--
+
+SELECT pg_catalog.setval('public.cc_playout_history_id_seq', 1, false);
+
+
+--
+-- Name: cc_playout_history_metadata_id_seq; Type: SEQUENCE SET; Schema: public; Owner: {{db_user_name}}
+--
+
+SELECT pg_catalog.setval('public.cc_playout_history_metadata_id_seq', 1, false);
+
+
+--
+-- Name: cc_playout_history_template_field_id_seq; Type: SEQUENCE SET; Schema: public; Owner: {{db_user_name}}
+--
+
+SELECT pg_catalog.setval('public.cc_playout_history_template_field_id_seq', 1, false);
+
+
+--
+-- Name: cc_playout_history_template_id_seq; Type: SEQUENCE SET; Schema: public; Owner: {{db_user_name}}
+--
+
+SELECT pg_catalog.setval('public.cc_playout_history_template_id_seq', 1, false);
+
+
+--
+-- Name: cc_pref_id_seq; Type: SEQUENCE SET; Schema: public; Owner: {{db_user_name}}
+--
+
+SELECT pg_catalog.setval('public.cc_pref_id_seq', 42, true);
+
+
+--
+-- Name: cc_schedule_id_seq; Type: SEQUENCE SET; Schema: public; Owner: {{db_user_name}}
+--
+
+SELECT pg_catalog.setval('public.cc_schedule_id_seq', 1, false);
+
+
+--
+-- Name: cc_show_days_id_seq; Type: SEQUENCE SET; Schema: public; Owner: {{db_user_name}}
+--
+
+SELECT pg_catalog.setval('public.cc_show_days_id_seq', 1, false);
+
+
+--
+-- Name: cc_show_hosts_id_seq; Type: SEQUENCE SET; Schema: public; Owner: {{db_user_name}}
+--
+
+SELECT pg_catalog.setval('public.cc_show_hosts_id_seq', 1, false);
+
+
+--
+-- Name: cc_show_id_seq; Type: SEQUENCE SET; Schema: public; Owner: {{db_user_name}}
+--
+
+SELECT pg_catalog.setval('public.cc_show_id_seq', 1, false);
+
+
+--
+-- Name: cc_show_instances_id_seq; Type: SEQUENCE SET; Schema: public; Owner: {{db_user_name}}
+--
+
+SELECT pg_catalog.setval('public.cc_show_instances_id_seq', 1, false);
+
+
+--
+-- Name: cc_show_rebroadcast_id_seq; Type: SEQUENCE SET; Schema: public; Owner: {{db_user_name}}
+--
+
+SELECT pg_catalog.setval('public.cc_show_rebroadcast_id_seq', 1, false);
+
+
+--
+-- Name: cc_subjs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: {{db_user_name}}
+--
+
+SELECT pg_catalog.setval('public.cc_subjs_id_seq', 1, true);
+
+
+--
+-- Name: cc_subjs_token_id_seq; Type: SEQUENCE SET; Schema: public; Owner: {{db_user_name}}
+--
+
+SELECT pg_catalog.setval('public.cc_subjs_token_id_seq', 1, false);
+
+
+--
+-- Name: cc_timestamp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: {{db_user_name}}
+--
+
+SELECT pg_catalog.setval('public.cc_timestamp_id_seq', 1, false);
+
+
+--
+-- Name: cc_webstream_id_seq; Type: SEQUENCE SET; Schema: public; Owner: {{db_user_name}}
+--
+
+SELECT pg_catalog.setval('public.cc_webstream_id_seq', 1, false);
+
+
+--
+-- Name: cc_webstream_metadata_id_seq; Type: SEQUENCE SET; Schema: public; Owner: {{db_user_name}}
+--
+
+SELECT pg_catalog.setval('public.cc_webstream_metadata_id_seq', 1, false);
+
+
+--
+-- Name: celery_tasks_id_seq; Type: SEQUENCE SET; Schema: public; Owner: {{db_user_name}}
+--
+
+SELECT pg_catalog.setval('public.celery_tasks_id_seq', 1, false);
+
+
+--
+-- Name: cloud_file_id_seq; Type: SEQUENCE SET; Schema: public; Owner: {{db_user_name}}
+--
+
+SELECT pg_catalog.setval('public.cloud_file_id_seq', 1, false);
+
+
+--
+-- Name: imported_podcast_id_seq; Type: SEQUENCE SET; Schema: public; Owner: {{db_user_name}}
+--
+
+SELECT pg_catalog.setval('public.imported_podcast_id_seq', 1, false);
+
+
+--
+-- Name: podcast_episodes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: {{db_user_name}}
+--
+
+SELECT pg_catalog.setval('public.podcast_episodes_id_seq', 1, false);
+
+
+--
+-- Name: podcast_id_seq; Type: SEQUENCE SET; Schema: public; Owner: {{db_user_name}}
+--
+
+SELECT pg_catalog.setval('public.podcast_id_seq', 1, true);
+
+
+--
+-- Name: schedule_group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: {{db_user_name}}
+--
+
+SELECT pg_catalog.setval('public.schedule_group_id_seq', 1, false);
+
+
+--
+-- Name: show_group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: {{db_user_name}}
+--
+
+SELECT pg_catalog.setval('public.show_group_id_seq', 1, false);
+
+
+--
+-- Name: station_podcast_id_seq; Type: SEQUENCE SET; Schema: public; Owner: {{db_user_name}}
+--
+
+SELECT pg_catalog.setval('public.station_podcast_id_seq', 1, true);
+
+
+--
+-- Name: third_party_track_references_id_seq; Type: SEQUENCE SET; Schema: public; Owner: {{db_user_name}}
+--
+
+SELECT pg_catalog.setval('public.third_party_track_references_id_seq', 1, false);
+
+
+--
+-- Name: cc_block cc_block_pkey; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_block
+    ADD CONSTRAINT cc_block_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cc_blockcontents cc_blockcontents_pkey; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_blockcontents
+    ADD CONSTRAINT cc_blockcontents_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cc_blockcriteria cc_blockcriteria_pkey; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_blockcriteria
+    ADD CONSTRAINT cc_blockcriteria_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cc_country cc_country_pkey; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_country
+    ADD CONSTRAINT cc_country_pkey PRIMARY KEY (isocode);
+
+
+--
+-- Name: cc_files cc_files_pkey; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_files
+    ADD CONSTRAINT cc_files_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cc_listener_count cc_listener_count_pkey; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_listener_count
+    ADD CONSTRAINT cc_listener_count_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cc_live_log cc_live_log_pkey; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_live_log
+    ADD CONSTRAINT cc_live_log_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cc_login_attempts cc_login_attempts_pkey; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_login_attempts
+    ADD CONSTRAINT cc_login_attempts_pkey PRIMARY KEY (ip);
+
+
+--
+-- Name: cc_mount_name cc_mount_name_pkey; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_mount_name
+    ADD CONSTRAINT cc_mount_name_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cc_music_dirs cc_music_dir_unique; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_music_dirs
+    ADD CONSTRAINT cc_music_dir_unique UNIQUE (directory);
+
+
+--
+-- Name: cc_music_dirs cc_music_dirs_pkey; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_music_dirs
+    ADD CONSTRAINT cc_music_dirs_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cc_perms cc_perms_all_idx; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_perms
+    ADD CONSTRAINT cc_perms_all_idx UNIQUE (subj, action, obj);
+
+
+--
+-- Name: cc_perms cc_perms_permid_idx; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_perms
+    ADD CONSTRAINT cc_perms_permid_idx PRIMARY KEY (permid);
+
+
+--
+-- Name: cc_playlist cc_playlist_pkey; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_playlist
+    ADD CONSTRAINT cc_playlist_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cc_playlistcontents cc_playlistcontents_pkey; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_playlistcontents
+    ADD CONSTRAINT cc_playlistcontents_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cc_playout_history_metadata cc_playout_history_metadata_pkey; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_playout_history_metadata
+    ADD CONSTRAINT cc_playout_history_metadata_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cc_playout_history cc_playout_history_pkey; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_playout_history
+    ADD CONSTRAINT cc_playout_history_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cc_playout_history_template_field cc_playout_history_template_field_pkey; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_playout_history_template_field
+    ADD CONSTRAINT cc_playout_history_template_field_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cc_playout_history_template cc_playout_history_template_pkey; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_playout_history_template
+    ADD CONSTRAINT cc_playout_history_template_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cc_pref cc_pref_id_idx; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_pref
+    ADD CONSTRAINT cc_pref_id_idx PRIMARY KEY (id);
+
+
+--
+-- Name: cc_pref cc_pref_subj_key_idx; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_pref
+    ADD CONSTRAINT cc_pref_subj_key_idx UNIQUE (subjid, keystr);
+
+
+--
+-- Name: cc_schedule cc_schedule_pkey; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_schedule
+    ADD CONSTRAINT cc_schedule_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cc_service_register cc_service_register_pkey; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_service_register
+    ADD CONSTRAINT cc_service_register_pkey PRIMARY KEY (name);
+
+
+--
+-- Name: cc_sess cc_sess_pkey; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_sess
+    ADD CONSTRAINT cc_sess_pkey PRIMARY KEY (sessid);
+
+
+--
+-- Name: cc_show_days cc_show_days_pkey; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_show_days
+    ADD CONSTRAINT cc_show_days_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cc_show_hosts cc_show_hosts_pkey; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_show_hosts
+    ADD CONSTRAINT cc_show_hosts_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cc_show_instances cc_show_instances_pkey; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_show_instances
+    ADD CONSTRAINT cc_show_instances_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cc_show cc_show_pkey; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_show
+    ADD CONSTRAINT cc_show_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cc_show_rebroadcast cc_show_rebroadcast_pkey; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_show_rebroadcast
+    ADD CONSTRAINT cc_show_rebroadcast_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cc_smemb cc_smemb_id_idx; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_smemb
+    ADD CONSTRAINT cc_smemb_id_idx PRIMARY KEY (id);
+
+
+--
+-- Name: cc_stream_setting cc_stream_setting_pkey; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_stream_setting
+    ADD CONSTRAINT cc_stream_setting_pkey PRIMARY KEY (keyname);
+
+
+--
+-- Name: cc_subjs cc_subjs_id_idx; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_subjs
+    ADD CONSTRAINT cc_subjs_id_idx PRIMARY KEY (id);
+
+
+--
+-- Name: cc_subjs cc_subjs_login_idx; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_subjs
+    ADD CONSTRAINT cc_subjs_login_idx UNIQUE (login);
+
+
+--
+-- Name: cc_subjs_token cc_subjs_token_idx; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_subjs_token
+    ADD CONSTRAINT cc_subjs_token_idx UNIQUE (token);
+
+
+--
+-- Name: cc_subjs_token cc_subjs_token_pkey; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_subjs_token
+    ADD CONSTRAINT cc_subjs_token_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cc_timestamp cc_timestamp_pkey; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_timestamp
+    ADD CONSTRAINT cc_timestamp_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cc_webstream_metadata cc_webstream_metadata_pkey; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_webstream_metadata
+    ADD CONSTRAINT cc_webstream_metadata_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cc_webstream cc_webstream_pkey; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_webstream
+    ADD CONSTRAINT cc_webstream_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cloud_file cloud_file_pkey; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cloud_file
+    ADD CONSTRAINT cloud_file_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: third_party_track_references foreign_id_unique; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.third_party_track_references
+    ADD CONSTRAINT foreign_id_unique UNIQUE (foreign_id);
+
+
+--
+-- Name: celery_tasks id_unique; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.celery_tasks
+    ADD CONSTRAINT id_unique PRIMARY KEY (id);
+
+
+--
+-- Name: imported_podcast imported_podcast_pkey; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.imported_podcast
+    ADD CONSTRAINT imported_podcast_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: podcast_episodes podcast_episodes_pkey; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.podcast_episodes
+    ADD CONSTRAINT podcast_episodes_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: podcast podcast_pkey; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.podcast
+    ADD CONSTRAINT podcast_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: station_podcast station_podcast_pkey; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.station_podcast
+    ADD CONSTRAINT station_podcast_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: third_party_track_references third_party_track_references_pkey; Type: CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.third_party_track_references
+    ADD CONSTRAINT third_party_track_references_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cc_files_md5_idx; Type: INDEX; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE INDEX cc_files_md5_idx ON public.cc_files USING btree (md5);
+
+
+--
+-- Name: cc_files_name_idx; Type: INDEX; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE INDEX cc_files_name_idx ON public.cc_files USING btree (name);
+
+
+--
+-- Name: cc_perms_subj_obj_idx; Type: INDEX; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE INDEX cc_perms_subj_obj_idx ON public.cc_perms USING btree (subj, obj);
+
+
+--
+-- Name: cc_pref_key_idx; Type: INDEX; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE UNIQUE INDEX cc_pref_key_idx ON public.cc_pref USING btree (keystr) WHERE (subjid IS NULL);
+
+
+--
+-- Name: cc_pref_subjid_idx; Type: INDEX; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE INDEX cc_pref_subjid_idx ON public.cc_pref USING btree (subjid);
+
+
+--
+-- Name: cc_schedule_instance_id_idx; Type: INDEX; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE INDEX cc_schedule_instance_id_idx ON public.cc_schedule USING btree (instance_id);
+
+
+--
+-- Name: cc_sess_login_idx; Type: INDEX; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE INDEX cc_sess_login_idx ON public.cc_sess USING btree (login);
+
+
+--
+-- Name: cc_sess_userid_idx; Type: INDEX; Schema: public; Owner: {{db_user_name}}
+--
+
+CREATE INDEX cc_sess_userid_idx ON public.cc_sess USING btree (userid);
+
+
+--
+-- Name: cc_block cc_block_createdby_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_block
+    ADD CONSTRAINT cc_block_createdby_fkey FOREIGN KEY (creator_id) REFERENCES public.cc_subjs(id) ON DELETE CASCADE;
+
+
+--
+-- Name: cc_blockcontents cc_blockcontents_block_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_blockcontents
+    ADD CONSTRAINT cc_blockcontents_block_id_fkey FOREIGN KEY (block_id) REFERENCES public.cc_block(id) ON DELETE CASCADE;
+
+
+--
+-- Name: cc_blockcriteria cc_blockcontents_block_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_blockcriteria
+    ADD CONSTRAINT cc_blockcontents_block_id_fkey FOREIGN KEY (block_id) REFERENCES public.cc_block(id) ON DELETE CASCADE;
+
+
+--
+-- Name: cc_blockcontents cc_blockcontents_file_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_blockcontents
+    ADD CONSTRAINT cc_blockcontents_file_id_fkey FOREIGN KEY (file_id) REFERENCES public.cc_files(id) ON DELETE CASCADE;
+
+
+--
+-- Name: cc_files cc_files_editedby_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_files
+    ADD CONSTRAINT cc_files_editedby_fkey FOREIGN KEY (editedby) REFERENCES public.cc_subjs(id);
+
+
+--
+-- Name: cc_files cc_files_owner_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_files
+    ADD CONSTRAINT cc_files_owner_fkey FOREIGN KEY (owner_id) REFERENCES public.cc_subjs(id);
+
+
+--
+-- Name: cc_playout_history cc_his_item_inst_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_playout_history
+    ADD CONSTRAINT cc_his_item_inst_fkey FOREIGN KEY (instance_id) REFERENCES public.cc_show_instances(id) ON DELETE SET NULL;
+
+
+--
+-- Name: cc_listener_count cc_mount_name_inst_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_listener_count
+    ADD CONSTRAINT cc_mount_name_inst_fkey FOREIGN KEY (mount_name_id) REFERENCES public.cc_mount_name(id) ON DELETE CASCADE;
+
+
+--
+-- Name: cc_files cc_music_dirs_folder_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_files
+    ADD CONSTRAINT cc_music_dirs_folder_fkey FOREIGN KEY (directory) REFERENCES public.cc_music_dirs(id);
+
+
+--
+-- Name: cc_show_instances cc_original_show_instance_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_show_instances
+    ADD CONSTRAINT cc_original_show_instance_fkey FOREIGN KEY (instance_id) REFERENCES public.cc_show_instances(id) ON DELETE CASCADE;
+
+
+--
+-- Name: cc_show_hosts cc_perm_host_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_show_hosts
+    ADD CONSTRAINT cc_perm_host_fkey FOREIGN KEY (subjs_id) REFERENCES public.cc_subjs(id) ON DELETE CASCADE;
+
+
+--
+-- Name: cc_show_hosts cc_perm_show_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_show_hosts
+    ADD CONSTRAINT cc_perm_show_fkey FOREIGN KEY (show_id) REFERENCES public.cc_show(id) ON DELETE CASCADE;
+
+
+--
+-- Name: cc_perms cc_perms_subj_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_perms
+    ADD CONSTRAINT cc_perms_subj_fkey FOREIGN KEY (subj) REFERENCES public.cc_subjs(id) ON DELETE CASCADE;
+
+
+--
+-- Name: cc_show cc_playlist_autoplaylist_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_show
+    ADD CONSTRAINT cc_playlist_autoplaylist_fkey FOREIGN KEY (autoplaylist_id) REFERENCES public.cc_playlist(id) ON DELETE SET NULL;
+
+
+--
+-- Name: cc_playlist cc_playlist_createdby_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_playlist
+    ADD CONSTRAINT cc_playlist_createdby_fkey FOREIGN KEY (creator_id) REFERENCES public.cc_subjs(id) ON DELETE CASCADE;
+
+
+--
+-- Name: cc_playlistcontents cc_playlistcontents_block_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_playlistcontents
+    ADD CONSTRAINT cc_playlistcontents_block_id_fkey FOREIGN KEY (block_id) REFERENCES public.cc_block(id) ON DELETE CASCADE;
+
+
+--
+-- Name: cc_playlistcontents cc_playlistcontents_file_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_playlistcontents
+    ADD CONSTRAINT cc_playlistcontents_file_id_fkey FOREIGN KEY (file_id) REFERENCES public.cc_files(id) ON DELETE CASCADE;
+
+
+--
+-- Name: cc_playlistcontents cc_playlistcontents_playlist_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_playlistcontents
+    ADD CONSTRAINT cc_playlistcontents_playlist_id_fkey FOREIGN KEY (playlist_id) REFERENCES public.cc_playlist(id) ON DELETE CASCADE;
+
+
+--
+-- Name: cc_playout_history cc_playout_history_file_tag_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_playout_history
+    ADD CONSTRAINT cc_playout_history_file_tag_fkey FOREIGN KEY (file_id) REFERENCES public.cc_files(id) ON DELETE CASCADE;
+
+
+--
+-- Name: cc_playout_history_metadata cc_playout_history_metadata_entry_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_playout_history_metadata
+    ADD CONSTRAINT cc_playout_history_metadata_entry_fkey FOREIGN KEY (history_id) REFERENCES public.cc_playout_history(id) ON DELETE CASCADE;
+
+
+--
+-- Name: cc_playout_history_template_field cc_playout_history_template_template_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_playout_history_template_field
+    ADD CONSTRAINT cc_playout_history_template_template_fkey FOREIGN KEY (template_id) REFERENCES public.cc_playout_history_template(id) ON DELETE CASCADE;
+
+
+--
+-- Name: cc_pref cc_pref_subjid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_pref
+    ADD CONSTRAINT cc_pref_subjid_fkey FOREIGN KEY (subjid) REFERENCES public.cc_subjs(id) ON DELETE CASCADE;
+
+
+--
+-- Name: cc_show_instances cc_recorded_file_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_show_instances
+    ADD CONSTRAINT cc_recorded_file_fkey FOREIGN KEY (file_id) REFERENCES public.cc_files(id) ON DELETE CASCADE;
+
+
+--
+-- Name: cc_webstream_metadata cc_schedule_inst_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_webstream_metadata
+    ADD CONSTRAINT cc_schedule_inst_fkey FOREIGN KEY (instance_id) REFERENCES public.cc_schedule(id) ON DELETE CASCADE;
+
+
+--
+-- Name: cc_sess cc_sess_userid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_sess
+    ADD CONSTRAINT cc_sess_userid_fkey FOREIGN KEY (userid) REFERENCES public.cc_subjs(id) ON DELETE CASCADE;
+
+
+--
+-- Name: cc_schedule cc_show_file_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_schedule
+    ADD CONSTRAINT cc_show_file_fkey FOREIGN KEY (file_id) REFERENCES public.cc_files(id) ON DELETE CASCADE;
+
+
+--
+-- Name: cc_show_instances cc_show_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_show_instances
+    ADD CONSTRAINT cc_show_fkey FOREIGN KEY (show_id) REFERENCES public.cc_show(id) ON DELETE CASCADE;
+
+
+--
+-- Name: cc_show_days cc_show_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_show_days
+    ADD CONSTRAINT cc_show_fkey FOREIGN KEY (show_id) REFERENCES public.cc_show(id) ON DELETE CASCADE;
+
+
+--
+-- Name: cc_show_rebroadcast cc_show_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_show_rebroadcast
+    ADD CONSTRAINT cc_show_fkey FOREIGN KEY (show_id) REFERENCES public.cc_show(id) ON DELETE CASCADE;
+
+
+--
+-- Name: cc_schedule cc_show_inst_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_schedule
+    ADD CONSTRAINT cc_show_inst_fkey FOREIGN KEY (instance_id) REFERENCES public.cc_show_instances(id) ON DELETE CASCADE;
+
+
+--
+-- Name: cc_schedule cc_show_stream_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_schedule
+    ADD CONSTRAINT cc_show_stream_fkey FOREIGN KEY (stream_id) REFERENCES public.cc_webstream(id) ON DELETE CASCADE;
+
+
+--
+-- Name: cc_subjs_token cc_subjs_token_userid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_subjs_token
+    ADD CONSTRAINT cc_subjs_token_userid_fkey FOREIGN KEY (user_id) REFERENCES public.cc_subjs(id) ON DELETE CASCADE;
+
+
+--
+-- Name: cc_listener_count cc_timestamp_inst_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cc_listener_count
+    ADD CONSTRAINT cc_timestamp_inst_fkey FOREIGN KEY (timestamp_id) REFERENCES public.cc_timestamp(id) ON DELETE CASCADE;
+
+
+--
+-- Name: celery_tasks celery_service_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.celery_tasks
+    ADD CONSTRAINT celery_service_fkey FOREIGN KEY (track_reference) REFERENCES public.third_party_track_references(id) ON DELETE CASCADE;
+
+
+--
+-- Name: cloud_file cloud_file_FK_1; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.cloud_file
+    ADD CONSTRAINT "cloud_file_FK_1" FOREIGN KEY (cc_file_id) REFERENCES public.cc_files(id) ON DELETE CASCADE;
+
+
+--
+-- Name: podcast_episodes podcast_episodes_cc_files_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.podcast_episodes
+    ADD CONSTRAINT podcast_episodes_cc_files_fkey FOREIGN KEY (file_id) REFERENCES public.cc_files(id) ON DELETE CASCADE;
+
+
+--
+-- Name: podcast_episodes podcast_episodes_podcast_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.podcast_episodes
+    ADD CONSTRAINT podcast_episodes_podcast_id_fkey FOREIGN KEY (podcast_id) REFERENCES public.podcast(id) ON DELETE CASCADE;
+
+
+--
+-- Name: station_podcast podcast_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.station_podcast
+    ADD CONSTRAINT podcast_id_fkey FOREIGN KEY (podcast_id) REFERENCES public.podcast(id) ON DELETE CASCADE;
+
+
+--
+-- Name: imported_podcast podcast_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.imported_podcast
+    ADD CONSTRAINT podcast_id_fkey FOREIGN KEY (podcast_id) REFERENCES public.podcast(id) ON DELETE CASCADE;
+
+
+--
+-- Name: podcast podcast_owner_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.podcast
+    ADD CONSTRAINT podcast_owner_fkey FOREIGN KEY (owner) REFERENCES public.cc_subjs(id) ON DELETE CASCADE;
+
+
+--
+-- Name: third_party_track_references track_reference_fkey; Type: FK CONSTRAINT; Schema: public; Owner: {{db_user_name}}
+--
+
+ALTER TABLE ONLY public.third_party_track_references
+    ADD CONSTRAINT track_reference_fkey FOREIGN KEY (file_id) REFERENCES public.cc_files(id) ON DELETE CASCADE;
+
+
+--
+-- PostgreSQL database dump complete
+--
+
