@@ -1,4 +1,4 @@
-
+---
 
 - route53_zone:
     zone: "{{domain_name}}"
@@ -23,7 +23,7 @@
 - route53:
     state: create
     zone: "{{domain_name}}."
-    record: "{{domain_name}}"
+    record: "{{subdomain_name}}"
     type: A
     value: "{{elb.load_balancers[0]['dns_name']}}" # get this programaticlly
     alias: yes
