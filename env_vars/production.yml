@@ -14,6 +14,7 @@ vpc_id: vpc-9a9d97f8
 
 number_webserver_instances: 1
 domain_name: tehiku.radio
+subdomain_name: tehiku.radio
 
 
 # #memcached_instance_type: t2.small # right now we're using a localling installed memcache
