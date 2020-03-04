@@ -1,0 +1,10 @@
+---
+
+libretime_api_key: YOURKEYKEREY
+
+RESILIO_LOGIN: LOGINNAME
+RESILIO_PASS: PASSWORD
+RESILIO_FOLDER_KEY: YOURKEY
+RESILIO_FOLDER_KEY_SUNSHINE: ANOTHERKY
+
+elb_ssl_cert_arn: this_has_to_be_hard_coded_for_some_reason
