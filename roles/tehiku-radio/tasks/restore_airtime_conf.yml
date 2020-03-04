@@ -1,0 +1,26 @@
+---
+
+- name: Make sure services not running
+  service:
+    state: stopped
+    name: "{{item}}"
+  with_items:
+    - airtime-playout
+    - airtime-liquidsoap
+    - airtime_analyzer
+    - airtime-celery
+    - libretime_watch
+
+- name: Copy old config file back
+  shell: mv /etc/airtime/airtime.conf.bak /etc/airtime/airtime.conf
+
+- name: Make sure services are running
+  service:
+    state: started
+    name: "{{item}}"
+  with_items:
+    - airtime-playout
+    - airtime-liquidsoap
+    - airtime_analyzer
+    - airtime-celery
+    - libretime_watch

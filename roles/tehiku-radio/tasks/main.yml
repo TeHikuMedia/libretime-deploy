@@ -9,6 +9,7 @@
 #     dest: /etc/airtime/airtime.conf
 #   notify:
 #     - restart airtime
+- include: restore_airtime_conf.yml
 
 - include: resilio_sync.yml
 
