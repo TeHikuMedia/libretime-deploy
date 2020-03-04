@@ -63,7 +63,7 @@
     - env_vars/production.yml
     - env_vars/vault.yml
   roles:
-    - tehiku-radio
+    - sunshine
   tags:
     - production
     - deploy

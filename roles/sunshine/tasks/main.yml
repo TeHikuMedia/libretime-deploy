@@ -1,0 +1,8 @@
+---
+
+
+- include: resilio_sync.yml
+
+- name: Set timezone for machine
+  become: yes
+  command: "sudo timedatectl set-timezone Pacific/Auckland"
