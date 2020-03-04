@@ -7,6 +7,7 @@ ssl_dest_dir: /etc/ssl
 aws_region: ap-southeast-2
 timezone: Pacific/Auckland
 station_name: Sunshine FM
+
 maintenance: no
 
 # These are AWS seettings which are static or cant be create programatically via ansible
