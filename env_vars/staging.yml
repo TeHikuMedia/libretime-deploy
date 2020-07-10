@@ -1,0 +1,17 @@
+---
+
+env_type: staging
+ansible_python_interpreter: python3
+
+git_branch: tehiku_0.2 #python3_libretime_watch_rebased_ubuntu_eoan
+setup_git_repo: yes
+
+# AWS Settings
+webserver_instance_type: t3.medium #m5.large 
+webserver_ami: ami-02c24ae4efd45347e # sydney, Ubuntu 19.10
+ebs_volume_size: 150
+vpc_id: vpc-9a9d97f8
+
+number_webserver_instances: 1
+domain_name: staging.tehiku.radio
+subdomain_name: staging.tehiku.radio

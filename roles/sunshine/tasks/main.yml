@@ -1,8 +1,11 @@
 ---
 
+# - name: Set timezone for machine
+#   become: yes
+#   command: "sudo timedatectl set-timezone Etc/Greenwich"
+
+# - include: restore_airtime_conf.yml
 
 - include: resilio_sync.yml
 
-- name: Set timezone for machine
-  become: yes
-  command: "sudo timedatectl set-timezone Pacific/Auckland"
+- include: install_scripts.yml

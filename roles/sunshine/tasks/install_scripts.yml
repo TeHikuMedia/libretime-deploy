@@ -1,0 +1,26 @@
+---
+
+- name: Setup the git repo
+  git:  repo="{{ script_repo }}" 
+        dest="{{ script_dir }}" 
+        version="{{ script_branch }}"
+        accept_hostkey=yes
+        force=yes
+  when: setup_git_repo
+  tags:
+    - git
+    - sunshine
+  become: false
+
+- name: Install setup.cfg
+  template:
+    src: setup.cfg.j2
+    dest: "{{ script_dir }}/setup.cfg"
+
+- name: Install system script dependencies
+  command: "python3 {{ script_dir }}/setup.py install"
+
+- name: Install conf for folder metata scan thing
+  template:
+    src: librescripts.conf.j2
+    dest: /etc/librescripts/conf.json

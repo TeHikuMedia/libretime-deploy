@@ -1,0 +1,13 @@
+---
+
+project_name: tehikufm
+project_name_pretty: "Te Hiku FM"
+project_name_slug: "te-hiku-fm"
+station_name: Te Hiku Radio
+domain_name: tehiku.radio
+subdomain_name: tehiku.radio
+
+webserver_ami: ami-0969c2bd5e23a670b # sydney, Debian 10
+remote_user: admin
+
+git_branch: python3_libretime_watch_rebased_debian_buster

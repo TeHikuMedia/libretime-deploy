@@ -3,7 +3,7 @@
 - name: Get server IP
   become: no
   local_action:
-    module: ec2_instance_facts
+    module: ec2_instance_info
     region: "{{ aws_region }}"
     filters:
       "tag:project_env_server_type": "{{project_name}}_{{env_type}}_{{server_type}}"

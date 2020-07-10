@@ -12,20 +12,30 @@
 #   tags:
 #     - build
 # - set_fact:
-#     version: "{{liqout['stdout_lines'][0]}}"
+#     version: "{{liqout['stdout_lines']}}"
+#   tags:
+#     - build
+
+# - set_fact:
+#     version: "{{version[0]}}"
+#   when: version|length > 0
+#   tags:
+#     - build
+# - set_fact:
+#     version: 0
+#   when: version|length == 0
 #   tags:
 #     - build
 
 # - debug:
-#     msg: "liquipsoap {{liq_version}} exists"
-#   when: version == liq_version
+#     msg: "liquipsoap {{version}} exists"
 #   tags:
 #     - build
 #     - liquidsoap
 #     - build-liquidsoap
 
 # - name: Install liquidsoap
-#   include: liquidsoap_build.yml
+#   include: liquidsoap.yml
 #   when: version != liq_version
 
 - name: Install libretime

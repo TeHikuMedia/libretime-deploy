@@ -50,7 +50,7 @@ Remote Instances
 
 To deploy a remote production instance,
 
-    ansible-playbook -i inventory/ec2.py --vault-id vault.sh --private-key=~/.ssh/yourkey.pem production.yml
+    ansible-playbook -i inventory/aws_ec2.yml --vault-id vault.sh --private-key=~/.ssh/yourkey.pem production.yml
 
 
 Once the instances have been launched and provisioned, it's only necessary to run the code with the following tags,
@@ -58,7 +58,7 @@ Once the instances have been launched and provisioned, it's only necessary to ru
 
 **Production:**
 
-    ansible-playbook -i inventory/ec2.py --vault-id vault.sh --private-key=~/.ssh/yourkey.pem production.yml
+    ansible-playbook -i inventory/aws_ec2.yml --vault-id vault.sh --private-key=~/.ssh/yourkey.pem production.yml
 
 
 Ansible Vault

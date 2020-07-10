@@ -80,14 +80,15 @@
     count_tag: 
       project_env_server_type: "{{ project_name }}_{{env_type}}_web"
     volumes:
-      - device_name: /dev/sda1
+      - device_name: /dev/xvda
         volume_type: gp2
-        volume_size: 250
+        volume_size: "{{ebs_volume_size}}"
         delete_on_termination: no
+        name: "{{ project_name }}-libretime-volume"
         tags:
           - project: "{{ project_name }}"
           - env_type: "{{ env_type }}"
-          - Name: "{{ project_name }}-volume"
+          - name: "{{ project_name }}-libretime-volume"
     termination_protection: yes
   register: ec2_webserver
 
@@ -108,5 +109,6 @@
       webserver: "{{env_type}}"
       app: "{{project_name}}"
       project_env_server_type: "{{ project_name }}_{{env_type}}_web"
+      for: radio
 
 

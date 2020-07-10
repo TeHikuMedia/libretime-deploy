@@ -16,51 +16,23 @@
   when: setup_git_repo
   tags: git
 
-# - name: Install python 3.7, and other required packages
-#   apt:
-#     name:
-#       - python-pip
-#       - python3-pip
-#       - python3.7
-#       - python3.7-venv
-#     state: present
-
-# - name: wierd apt fix
-#   apt:
-#     name:
-#       - python3-apt
-#       - python-apt
-#     state: absent
-
-# - name: wierd apt fix
-#   apt:
-#     name:
-#       - python3-apt
-#       - python-apt
-#     state: present
-
-# - name: Update python3 default
-#   command: update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 1
-#   command: update-alternatives --install /usr/bin/python python /usr/bin/python3.7 1
-
-# - name: Set python3.7 default
-#   command: update-alternatives --set python /usr/bin/python3.7
-#   command: update-alternatives --set python3 /usr/bin/python3.7
-
-# - name: Install required packages
-#   apt:
-#     name:
-#       - icecast2
-#     state: latest
-#   become: true
-
-# - name: Make python3 the system default
-#   command: update-alternatives --install /usr/bin/python python /usr/bin/python3 1
-
 - name: Run Libretime install script
-  command: "chdir=/home/ubuntu/{{project_name}} sudo /home/ubuntu/{{project_name}}/install -qfiap"
+  command: "chdir=/home/{{remote_user}}/{{project_name}} sudo /home/{{remote_user}}/{{project_name}}/install -qfiap"
   notify:
     - restart apache2
+
+# - name: Create libretime database
+#   become_user: postgres
+#   postgresql_db:
+#     name: "{{db_name}}"
+#     state: present
+
+# - name: Create database user
+#   postgresql_user:
+#     db: "{{db_name}}"
+#     name: "{{db_user_name}}"
+#     password: "{{db_user_password}}"
+#   become_user: postgres
 
 # - name: Copy the libretime config file
 #   become: yes
@@ -70,78 +42,16 @@
 #   notify:
 #     - restart airtime
 
-# - name: Install opam so we can get fdk library for airtime-liquidsoap
-#   apt:
-#     name:
-#       - opam
-#     state: present
-
-# - name: INstall the lib opam install fdkaac
-#   become: no
-#   shell: opam init -y fdkaac
-#   shell: opam switch create 4.10.0
-#   shell: opam install -y fdkaac
-
-- name: Start Lirbetime Services
-  become: yes
-  service:
-    name: "{{item}}"
-    state: started
-  with_items:
-      - airtime-playout
-      - airtime-liquidsoap
-      - airtime_analyzer
-      - airtime-celery
-      - libretime_watch
-      #- libretime_import
-
-
-# We should install a default config
-
-
-# Then we should ensure these are running
-# sudo service airtime-playout start
-# sudo service airtime-liquidsoap start
-# sudo service airtime_analyzer start
-# sudo service airtime-celery start
-
-
-
-
-
-# - name: Install git repo
-#   git:
-
-
-# - name: make repo directory
-#   become: true
-#   file:
-#     path: "{{ virtualenv_path }}"
-#     recurse: no # having this as yes fucks up while in deployment and live. plus the set file perms task does this anyway
-#     owner: "{{ ansible_ssh_user }}"
-#     group: "{{ gunicorn_group }}"
-#     state: directory
-#   tags:
-#    - git  
-
-
-# # Set specific permissions for git stuff
-# - name: set repo perms
-#   become: true
-#   file:
-#     path: "{{item}}"
-#     owner: "{{ ansible_ssh_user }}"
-#     group: "{{ gunicorn_group }}"
-#     recurse: yes
-#     state: directory
-#   tags:
-#     - git 
+# - name: Start Lirbetime Services
+#   become: yes
+#   service:
+#     name: "{{item}}"
+#     state: started
 #   with_items:
-#     - "{{project_path}}"
-
-# - name: Clean git repo directory
-#   shell: git clean -fX
-#   args:
-#     chdir: "{{ project_path }}"
-#   when: clean_git_repo
+#       - airtime-playout
+#       - airtime-liquidsoap
+#       - airtime_analyzer
+#       - airtime-celery
+#       - libretime_watch
+      #- libretime_import
 

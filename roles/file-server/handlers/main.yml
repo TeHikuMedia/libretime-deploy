@@ -1,0 +1,26 @@
+---
+
+- name: restart resilio-sync
+  service:
+    name: resilio-sync
+    state: stopped
+  service:
+    name: resilio-sync
+    state: started
+
+- name: restart airtime
+  service:
+    name: "{{item}}"
+    state: restarted
+  with_items:
+      - airtime-playout
+      - airtime-liquidsoap
+      - airtime_analyzer
+      - airtime-celery
+      - libretime_watch
+
+- name: restart nginx
+  service: name=nginx state=restarted enabled=yes
+
+- name: reload nginx
+  service: name=nginx state=reloaded

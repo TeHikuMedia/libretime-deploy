@@ -2,7 +2,14 @@
 
 project_path: "~/{{project_name}}"
 
-liq_version: 1.4.1
+liq_version: 1.3.7
+ocaml_version: 4.07.1
+
+# ## These require updates to the liq stuff
+
+# liq_version: 1.4.1
+# ocaml_version: 4.08.0
+
 
 # ffmpeg_build_dir:   "/home/{{ansible_ssh_user}}/ffmpeg_build"
 # ffmpeg_sources_dir: "/home/{{ansible_ssh_user}}/ffmpeg_sources"

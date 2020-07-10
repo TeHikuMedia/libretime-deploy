@@ -6,8 +6,7 @@ script_dir: /home/{{remote_user}}/media_import
 
 sync_dir: /home/{{remote_user}}/sync
 sync_config: "/etc/resilio-sync/config.json"
-db_dir: "{{sync_dir}}/TeHikuRadioDB"
+sunshine_db_dir: "{{sync_dir}}/SunshineRadioDB"
+tehiku_db_dir: "{{sync_dir}}/TeHikuRadioDB"
 
-
-
-delete_database: yes
+nginx_files_dir: /srv/files/

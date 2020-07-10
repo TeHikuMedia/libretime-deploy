@@ -1,0 +1,17 @@
+---
+
+project_name: radiofiles
+project_name_pretty: "Radio File Server"
+project_name_slug: "radiofiles"
+station_name: File Server
+domain_name: files.tehiku.radio
+subdomain_name: files.tehiku.radio
+zone_domain_name: tehiku.radio
+
+webserver_ami: ami-0969c2bd5e23a670b # sydney, Debian 10
+remote_user: admin
+
+webserver_instance_type: t3.micro #m5.large 
+
+
+# git_branch: python3_libretime_watch_rebased_debian_buster

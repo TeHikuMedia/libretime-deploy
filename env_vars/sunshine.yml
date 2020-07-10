@@ -1,0 +1,14 @@
+---
+
+project_name: sunshine
+station_name: Sunshine FM
+zone_domain_name: tehiku.radio
+domain_name: sunshine.tehiku.radio
+subdomain_name: sunshine.tehiku.radio
+project_name_pretty: "Sunshine FM"
+project_name_slug: "sunshine-fm"
+
+webserver_ami: ami-0969c2bd5e23a670b # sydney, Debian 10
+remote_user: admin
+
+git_branch: python3_libretime_watch_rebased_debian_buster

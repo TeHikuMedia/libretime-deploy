@@ -51,7 +51,7 @@
   shell: "{{item}}"
   with_items:
     - opam init -a --solver=mccs
-    - opam switch create 4.09.0 | true
+    - opam switch -y create 4.09.0 | true
     - opam install -y ocaml  --solver=mccs
     - opam install -y sedlex --solver=mccs
     - opam install -y xmlm --solver=mccs
@@ -86,6 +86,7 @@
     target: clean
   tags:
     - build
+  ignore_errors: yes
 
 - name: make
   become: no

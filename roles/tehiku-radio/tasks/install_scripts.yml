@@ -1,0 +1,54 @@
+---
+
+- name: Setup the git repo
+  git:  repo="{{ script_repo }}" 
+        dest="{{ script_dir }}" 
+        version="{{ script_branch }}"
+        accept_hostkey=yes
+        force=yes
+  when: setup_git_repo
+  tags:
+    - git
+    - tehiku
+  become: false
+
+- name: Install setup.cfg
+  template:
+    src: setup.cfg.j2
+    dest: "{{ script_dir }}/setup.cfg"
+
+- name: Install LibreScript packages
+  command: "python3 {{ script_dir }}/setup.py install"
+
+- name: Install conf for folder metata scan thing
+  template:
+    src: librescripts.conf.j2
+    dest: /etc/librescripts/conf.json
+
+# - name: Install system script dependencies
+#   command: "sh {{ script_dir }}/install.sh"
+
+# - name: Install script dependencies
+#   pip:
+#     requirements: "{{ script_dir }}/requirements.txt"
+#     state: latest
+
+# - name: Install cron file for scripts
+#   become: yes
+#   command: "cp {{ script_dir }}/media_importing/crontab /etc/cron.d/tehiku"
+
+# - name: Add Waatea cronjob
+#   become: false
+#   cron:
+#     name: "waatea_import"
+#     job: "/usr/bin/python3 /home/{{remote_user}}/media_import/media_importing/waatea_import.py > /home/{{remote_user}}/cron.log"
+#     minute: "31,45,50,55,57,58,59"
+#     hour: "06-19"
+
+# - name: Add ngatake cronjob # todo put this in the script repo not deploy!
+#   become: false
+#   cron:
+#     name: "nga_take_import"
+#     job: "/usr/bin/python3 /home/{{remote_user}}/media_import/media_importing/ngatake_import.py > /home/{{remote_user}}/cron.log"
+#     minute: "1,15,25"
+#     hour: "07-19"

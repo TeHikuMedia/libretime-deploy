@@ -1,7 +1,7 @@
 ---
 
 
-- ec2_instance_facts:
+- ec2_instance_info:
     region: "{{aws_region}}"
     filters:
       "tag:project_env_server_type":  "{{ project_name }}_{{env_type}}_web"
@@ -20,6 +20,10 @@
     region: ap-southeast-2    
     protocol: http
     port: 80
+    healthy_threshold_count: 2
+    unhealthy_threshold_count: 2
+    health_check_timeout: 2
+    health_check_interval: 5
     targets:
       - Id: "{{ec2_instances.instances[0].instance_id}}"
         Port: 80
@@ -36,11 +40,16 @@
     name: "{{ project_name }}-{{env_type}}-ice-{{item}}"
     state: present
     region: ap-southeast-2    
-    protocol: http
+    protocol: tcp
     port: "{{item}}"
     health_check_port: "80"
     health_check_protocol: http
     health_check_path: "/"
+    healthy_threshold_count: 2
+    unhealthy_threshold_count: 2
+    health_check_timeout: 6
+    health_check_interval: 30
+    stickiness_type: null
     targets:
       - Id: "{{ec2_instances.instances[0].instance_id}}"
         Port: "{{item}}"

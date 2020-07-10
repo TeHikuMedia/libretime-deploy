@@ -1,0 +1,13 @@
+# Used to only install some data files.
+# File Server settings
+[options.data_files]
+/etc/librescripts =
+    install/conf/conf.json
+/etc/cron.d =
+    install/cron/update_metadata
+/etc/init.d =
+	install/sysvinit/schedule-stream-target
+/etc/init =
+    install/upstart/schedule-stream-target.conf
+/etc/systemd/system =
+	install/systemd/schedule-stream-target.service

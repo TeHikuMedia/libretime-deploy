@@ -1,0 +1,36 @@
+{
+    "search_folders":[
+        "{{sunshine_db_dir}}",
+        "{{tehiku_db_dir}}"
+    ],
+    "project_name": "{{project_name_pretty}}",
+    "project_slug": "{{project_name_slug}}",
+    "log_path": "/var/log/librescripts",
+    "tmp_dir": "/tmp/librescripts",
+    "aws": {
+        "s3_bucket": "s3://tehiku-airtime-bucket/",
+        "access_key": "{{AWS_ACCESS_ID_BUCKET}}",
+        "secret_key": "{{AWS_SECRET_KEY_BUCKET}}",
+        "access_key_face": "{{FACE_ACCESS_KEY}}",
+        "secret_key_face": "{{FACE_SECRET_KEY}}"
+    },
+    "wowza": {
+        "user": "API",
+        "password": "Ku4ka1840"
+    },
+    "webhooks": [
+        {
+            "name": "Kingi",
+            "url": "https://hooks.zapier.com/hooks/catch/173948/o9q8l54/",
+            "type": "zapier"
+        },
+        {
+            "name": "Slack Automation Channel",
+            "url": "https://hooks.slack.com/services/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",
+            "type": "slack"
+        }
+    ],
+    "classifiers": {
+        "face": "/etc/librescripts/haarcascade_frontalface_default.xml"
+    }
+}

@@ -1,0 +1,14 @@
+---
+
+project_name: tehikufm
+project_name_pretty: "Te Hiku FM Stage"
+project_name_slug: "te-hiku-fm-stage"
+station_name: Te Hiku Radio Staging
+zone_domain_name: tehiku.radio
+domain_name: staging.tehiku.radio
+subdomain_name: staging.tehiku.radio
+
+webserver_ami: ami-0969c2bd5e23a670b # sydney, Debian 10
+remote_user: admin
+
+git_branch: libretime_master_libretime_watch_rebased

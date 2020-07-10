@@ -1,50 +1,81 @@
 ---
 
 
-- name: Add ocaml repo
-  command: add-apt-repository ppa:avsm/ppa -y
-
 - name: Install ocaml stuff
   apt:
     name:
       - opam
-    state: latest
-    update_cache: yes
-
-- name: Initialise opam
-  # become: no
-  become_user: root
-  raw: opam init -a && echo 'done'
-
-
-- name: Set the ocaml version
-  # become: no
-  become_user: root
-  raw: opam switch create 4.09.0 && echo 'done'
-  ignore_errors: yes
-
-
-- name: Install package dependinces
-  apt:
-    name:
+      - ocaml-native-compilers
+      - camlp4-extra
+      - opam
+      - autotools-dev
+      - automake
       - libmad0-dev
       - libmp3lame-dev
       - libfdk-aac-dev
+      - libfaad2
+    state: latest
+    update_cache: yes
+
+
+- name: Make liquidsoap group
+  group:
+    name: liquidsoap
     state: present
 
+- name: Make liquidsoap user
+  user:
+    name: liquidsoap
+    state: present
+    shell: /bin/bash
+    groups:
+      - liquidsoap
+      - admin
 
-- name: Install ocaml depext
-  # become: no
-  become_user: root
-  raw: opam install -y depext && echo Done
+- name: Make opam dirs
+  file:
+    path: "{{item}}"
+    state: directory
+    owner: liquidsoap
+    group: liquidsoap
+  with_items:
+    - /usr/share/liquidsoap/
+    - /usr/local/opam
 
 
-- name: Install ocaml deps
-  # become: no
-  become_user: root
-  raw: opam depext -y taglib mad lame vorbis cry samplerate fdkaac faad flac ssl ffmpeg liquidsoap && echo Done
+- name: Do OPAM Stuff
+  become_user: liquidsoap
+  command: "{{item}} --root=/usr/local/opam"
+  with_items:
+    - opam init -ay
+    - opam switch -y create {{ocaml_version}}
+    - opam pin liquidsoap {{liq_version}}
+    # - opam install -y depext
+    # - opam depext -y taglib mad lame vorbis cry samplerate fdkaac faad flac ssl ffmpeg liquidsoap 
+    # - opam install -y taglib mad lame vorbis cry samplerate fdkaac faad flac ssl ffmpeg liquidsoap
+  ignore_errors: yes
+    # - opam init -a
+    # - opam switch -y create 4.09.0 | true
+    # - opam install -y depext
 
-- name: Install ocaml programms
-  # become: no
-  become_user: root
-  raw: opam install -y taglib mad lame vorbis cry samplerate fdkaac faad flac ssl ffmpeg liquidsoap && echo Done
+
+# sudo apt install bash-completion
+
+
+- name: Make some thing
+  lineinfile:
+    line: "eval $(opam env --root=/usr/local/opam --set-root)"
+    path: /etc/profile.d/liquidsoap-opam.sh
+    state: present
+    create: yes
+
+- name: Link executable
+  file:
+    state: link
+    src: /usr/local/opam/4.09.0/bin/liquidsoap 
+    path: /usr/bin/liquidsoap
+    force: yes
+
+
+# echo "eval \`opam config env --root=/usr/local/opam\`" > /etc/profile.d/liquidsoap-opam.sh
+# ln -s /usr/local/opam/system/bin/liquidsoap /usr/bin/liquidsoap

@@ -1,5 +1,16 @@
 ---
 
+# - name: Install required packages
+#   command: add-apt-repository ppa:some/ppa
+  
+- name: Install required packages
+  apt:
+    name:
+      - software-properties-common
+      - gnupg
+    state: present
+    update_cache: yes
+
 - name: Get server IP
   become: no
   local_action:
@@ -49,8 +60,8 @@
     state: latest
 
 - name: Set users and groups for resilio
-  command: "usermod -aG {{remote_user}} rslsync"
-  command: "usermod -aG rslsync {{remote_user}}"
+  command: usermod -aG ubuntu rslsync
+  command: usermod -aG rslsync ubuntu
   command: usermod -aG www-data rslsync
   command: usermod -aG rslsync www-data
 
@@ -62,7 +73,13 @@
 
 - name: Make sure DB directory exists
   file:
-    dest: "{{db_dir}}"
+    dest: "{{tehiku_db_dir}}"
+    state: directory
+    mode: 0777
+
+- name: Make sure DB directory exists
+  file:
+    dest: "{{sunshine_db_dir}}"
     state: directory
     mode: 0777
 

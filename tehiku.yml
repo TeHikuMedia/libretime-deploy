@@ -1,11 +1,16 @@
 ### PLAYBOOK FOR THE PRODUCTION SERVERS ###
 
+# plugin: aws_ec2
+# regions:
+#   - ap-southeast-2
+
 - name: "Launch production {{ project_name }} server"
   hosts: localhost
   serial: "100%"
   vars_files:
     - env_vars/base.yml
     - env_vars/production.yml
+    - env_vars/tehiku.yml
     - env_vars/vault.yml
   vars:
     - server_type: web
@@ -25,7 +30,7 @@
 - name: "Provision production {{ project_name }} server"
   hosts: tag_project_env_server_type_{{ project_name }}_{{env_type}}_web
   serial: "100%"
-  remote_user: ubuntu
+  remote_user: admin
   become: true
   vars:
     - setup_bitbucket_repo: yes
@@ -36,6 +41,7 @@
   vars_files:
     - env_vars/base.yml
     - env_vars/production.yml
+    - env_vars/tehiku.yml
     - env_vars/vault.yml
   roles:
     - base
@@ -46,5 +52,28 @@
     - production
     - provision
     - provision-production
+    - web
+    - remote
+
+- name: "Deploy {{ project_name }} customisation"
+  hosts: tag_project_env_server_type_{{ project_name }}_{{env_type}}_web
+  serial: "100%"
+  remote_user: admin
+  become: true
+  vars:
+    - update_apt_cache: yes
+    - server_type: web
+    - host_tag: tag_project_env_server_type_{{project_name}}_{{env_type}}_web
+  vars_files:
+    - env_vars/base.yml
+    - env_vars/production.yml
+    - env_vars/tehiku.yml
+    - env_vars/vault.yml
+  roles:
+    - tehiku-radio
+  tags:
+    - production
+    - deploy
+    - deploy-production
     - web
     - remote
