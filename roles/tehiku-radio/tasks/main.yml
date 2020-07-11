@@ -10,3 +10,13 @@
 
 - include: install_scripts.yml
 
+- name: Make sure services are running
+  service:
+    state: restarted
+    name: "{{item}}"
+  with_items:
+    - libretime-analyzer
+    - libretime-playout
+    - libretime-liquidsoap
+    - libretime-celery
+    - libretime-watch

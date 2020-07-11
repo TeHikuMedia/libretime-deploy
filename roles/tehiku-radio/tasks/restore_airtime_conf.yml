@@ -5,11 +5,11 @@
     state: stopped
     name: "{{item}}"
   with_items:
-    - airtime-playout
-    - airtime-liquidsoap
-    - airtime_analyzer
-    - airtime-celery
-    - libretime_watch
+    - libretime-analyzer
+    - libretime-playout
+    - libretime-liquidsoap
+    - libretime-celery
+    - libretime-watch
 
 - name: Copy old config file back
   shell: mv /etc/airtime/airtime.conf.tmp /etc/airtime/airtime.conf
@@ -20,8 +20,8 @@
     state: started
     name: "{{item}}"
   with_items:
-    - airtime-playout
-    - airtime-liquidsoap
-    - airtime_analyzer
-    - airtime-celery
-    - libretime_watch
+    - libretime-analyzer
+    - libretime-playout
+    - libretime-liquidsoap
+    - libretime-celery
+    - libretime-watch
