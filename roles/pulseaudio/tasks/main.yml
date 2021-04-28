@@ -1,0 +1,30 @@
+---
+
+- name: Install pulseaudio
+  apt:
+    pkg:
+      - libasound2 
+      - libasound2-plugins
+      - alsa-utils
+      - alsa-oss
+      - pulseaudio
+      - pulseaudio-utils
+    state: latest
+    update_cache: yes
+
+- name: Add users to pulse group
+  shell: "usermod -aG pulse,pulse-access {{item}}"
+  loop:
+    - www-data
+    - admin
+
+- name: Copy asound file
+  copy:
+    src: asound.conf
+    dest: /etc/asound.conf
+
+- name: Install services
+  include: install_services.yml
+  loop:
+    - pulseaudio.service
+    - ffmpeg-libretime.service

@@ -1,0 +1,12 @@
+[Unit]
+Description=FFMPEG-Libretime
+
+[Service]
+ExecStart=/usr/bin/ffmpeg -f pulse -i 0 -vn -c:a libopus -b 96k -f rtsp rtsp://wowzahls.iwi.radio:1935/live/{{project_name}}_libretime
+User=www-data
+Group=www-data
+Restart=always
+RestartSec=1
+
+[Install]
+WantedBy=multi-user.target

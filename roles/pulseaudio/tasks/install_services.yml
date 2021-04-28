@@ -1,0 +1,23 @@
+---
+
+- name: Copy service for "{{item}}"
+  template:
+    src: "{{item}}"
+    dest: "/etc/systemd/system/{{item}}"
+  register: service_file
+
+- name: Reload systemd
+  systemd:
+    daemon_reload: yes
+
+- name: "Install and start {{item}} service"
+  systemd:
+    enabled: yes
+    state: started
+    name: "{{item}}"
+
+- name: "Restart {{item}}"
+  when: service_file.changed
+  systemd:
+    state: restarted
+    name: "{{item}}"
