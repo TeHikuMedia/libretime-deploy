@@ -18,6 +18,15 @@
     - www-data
     - admin
 
+- name: Make log dir
+  file:
+    state: directory
+    path: "{{item}}"
+    group: www-data
+    owner: www-data
+  loop:
+    - /var/log/ffmpeg-libretime
+
 - name: Copy asound file
   copy:
     src: asound.conf
