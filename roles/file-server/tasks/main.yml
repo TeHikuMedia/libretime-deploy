@@ -18,6 +18,7 @@
       - git
       - python3-setuptools
       - ffmpeg
+      - streamlink
     state: latest
     update_cache: yes
 
