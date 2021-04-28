@@ -6,6 +6,18 @@
     state: latest
     update_cache: yes
 
+- name: Install additional ALSA packages
+  apt:
+    name:
+      - alsa-utils 
+      - libasound2-plugins
+      - pulseaudio
+      - jackd2
+      - alsa-utils
+      - dbus-x11
+    state: latest
+    update_cache: yes
+
 # - name: "Check liquidsoap installed for version {{liq_version}}"
 #   shell: echo `liquidsoap --version | sed -n '1p' - | sed 's/[A-z]\+//'`
 #   register: liqout
