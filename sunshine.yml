@@ -66,6 +66,7 @@
     - env_vars/sunshine.yml
     - env_vars/vault.yml
   roles:
+    - pulseaudio
     - sunshine
   tags:
     - production

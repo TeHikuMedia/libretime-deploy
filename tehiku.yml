@@ -70,6 +70,7 @@
     - env_vars/tehiku.yml
     - env_vars/vault.yml
   roles:
+    - pulseaudio
     - tehiku-radio
   tags:
     - production
