@@ -12,7 +12,7 @@
 
 - name: Make sure services are running
   service:
-    state: restarted
+    state: started
     name: "{{item}}"
   with_items:
     - libretime-analyzer

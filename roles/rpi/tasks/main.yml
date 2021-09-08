@@ -1,0 +1,6 @@
+---
+
+- name: Install services
+  include: install_services.yml
+  loop:
+    - streamer.service

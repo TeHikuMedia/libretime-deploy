@@ -1,0 +1,14 @@
+rpis:
+  hosts:
+    taipa:
+      ansible_host: 10.56.193.187
+
+network:
+  children:
+    rpis:
+  vars:
+    ansible_user: pi
+
+datacenter:
+  children:
+    network:

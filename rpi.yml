@@ -1,0 +1,19 @@
+### PLAYBOOK FOR THE RPIs ###
+
+- name: "Deploy {{ project_name }} rpi"
+  hosts:
+    - rpis
+  remote_user: pi
+  become: true
+  vars:
+    - foo: bar
+  vars_files:
+    - env_vars/base.yml
+    - env_vars/production.yml
+    - env_vars/tehiku.yml
+    - env_vars/vault.yml
+  roles:
+    - rpi
+  tags:
+    - deploy
+

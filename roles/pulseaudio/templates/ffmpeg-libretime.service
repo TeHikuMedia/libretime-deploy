@@ -3,7 +3,7 @@ Description=FFMPEG-Libretime
 
 [Service]
 WorkingDirectory=/var/log/ffmpeg-libretime/
-ExecStart=/usr/bin/ffmpeg -report -loglevel warning -f pulse -i 0 -vn -c:a libopus -ab 96K -ac 2 -vbr off -f rtsp rtsp://172.31.39.176:1935/live/{{project_name}}_libretime
+ExecStart=/usr/bin/ffmpeg -report -loglevel warning -f pulse -i 0 -vn -c:a libopus -ab 96K -ac 2 -vbr off -f rtsp rtsp://54.253.11.77:1935/live/{{project_name}}_libretime
 User=www-data
 Group=www-data
 Restart=always
